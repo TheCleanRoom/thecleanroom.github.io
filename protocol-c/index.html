@@ -1,0 +1,134 @@
+import os
+
+# Ensure the sub-directory exists
+os.makedirs('cleanroom_site/protocol-c', exist_ok=True)
+
+html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol C | Technical Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Inter:wght@300;400;600&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #000000; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .section-border { border-top: 1px solid #e5e7eb; }
+        pre { background-color: #f9fafb; padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body class="max-w-3xl mx-auto px-6 py-12 md:py-24">
+
+    <nav class="mono text-[10px] uppercase tracking-widest text-gray-400 mb-16">
+        <a href="../index.html" class="hover:text-black transition">BACK TO INDEX</a> / PROTOCOL-C-DOCS
+    </nav>
+
+    <header class="mb-20">
+        <h1 class="text-3xl font-semibold tracking-tight mb-4">Widely-Linear Isomorphism in 2-Bit Regimes</h1>
+        <p class="text-gray-500 font-mono text-sm">Specification v0.3.0</p>
+    </header>
+
+    <main class="space-y-16">
+
+        <section>
+            <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-6">01. Theoretical Foundation</h2>
+            <p class="mb-6">
+                Protocol C defines a widely-linear mapping for complex-valued signals in Mixture-of-Experts (MoE) routing. 
+                Unlike standard linear layers, a widely-linear operator treats a signal \( \mathbf{x} \) and its conjugate \( \overline{\mathbf{x}} \) 
+                as distinct entities, allowing for the capture of non-circular signal distributions common in low-bit quantization.
+            </p>
+            <div class="py-8 text-center text-xl">
+                $$ \mathbf{y} = \mathbf{U}\mathbf{x} + \mathbf{W}\overline{\mathbf{x}} $$
+            </div>
+            <p class="text-sm text-gray-500">
+                Where \( \mathbf{U} \) and \( \mathbf{W} \) are weight matrices quantized to a 2-bit complex subspace.
+            </p>
+        </section>
+
+        [Image of complex-valued neural network signal processing with real and imaginary components]
+
+        <section class="section-border pt-12">
+            <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-6">02. 2-Bit Complex Mapping</h2>
+            <p class="mb-8">
+                To eliminate floating-point multiplication, Protocol C maps 2-bit integers to the set of Gaussian integer units. 
+                This transforms the "dot product" into a sequence of conditional sign-flips and real-imaginary swaps.
+            </p>
+            <table class="w-full text-left mono text-sm mb-8 border-collapse">
+                <thead>
+                    <tr class="border-b border-gray-200">
+                        <th class="py-3 font-bold">Bit Pattern</th>
+                        <th class="py-3 font-bold">Complex Unit</th>
+                        <th class="py-3 font-bold">Operation</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600">
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3">00 (0)</td>
+                        <td class="py-3">+1</td>
+                        <td class="py-3">Identity</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3">01 (1)</td>
+                        <td class="py-3">-1</td>
+                        <td class="py-3">Sign Flip</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3">10 (2)</td>
+                        <td class="py-3">+i</td>
+                        <td class="py-3">Swap + Sign Flip (Imag)</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3">11 (3)</td>
+                        <td class="py-3">-i</td>
+                        <td class="py-3">Swap + Sign Flip (Real)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section-border pt-12">
+            <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-6">03. Triton Kernel Implementation</h2>
+            <p class="mb-6">
+                The kernel utilizes bitwise logic to execute the mapping above at hardware-native speeds, bypassing the CUDA tensor cores' 
+                Standard FP32/FP16 pipelines.
+            </p>
+            <pre class="mono text-xs">
+# Widely-Linear 2-bit Transformation logic
+u_swapped_r = tl.where(u_bits >= 2, -xi, xr)
+u_swapped_i = tl.where(u_bits >= 2, xr, xi)
+
+ur = tl.where(u_bits % 2 == 1, -u_swapped_r, u_swapped_r)
+ui = tl.where(u_bits % 2 == 1, -u_swapped_i, u_swapped_i)
+            </pre>
+        </section>
+
+        <section class="section-border pt-12">
+            <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-6">04. The Armen Guard</h2>
+            <p>
+                To maintain stability during inference, the Armen Guard monitors the spectral norm of the signal. 
+                When variance exceeds the defined threshold (\( \sigma^2 > 0.85 \)), the router applies an orthogonal 
+                phase shift \( e^{i\pi/2} \) to relocate the packet within the stable manifold of the latent space.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="mt-32 pt-12 border-t border-gray-100">
+        <p class="mono text-[10px] text-gray-400 uppercase tracking-widest">
+            Star Inn Research Series | 2025
+        </p>
+    </footer>
+
+</body>
+</html>
+"""
+
+with open('cleanroom_site/protocol-c/index.html', 'w') as f:
+    f.write(html_content)
+
+print("✅ Sanitized Tech Docs generated: cleanroom_site/protocol-c/index.html")
