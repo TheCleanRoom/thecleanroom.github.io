@@ -1,8 +1,3 @@
-import os
-
-# Ensure the site directory exists
-os.makedirs('cleanroom_site', exist_ok=True)
-
 html_content = """
 <!DOCTYPE html>
 <html lang="en">
@@ -86,8 +81,3 @@ html_content = """
 </body>
 </html>
 """
-
-with open('cleanroom_site/index.html', 'w') as f:
-    f.write(html_content)
-
-print("✅ sanitized: cleanroom_site/index.html generated with 0% cringe.")
