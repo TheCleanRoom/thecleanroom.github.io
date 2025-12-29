@@ -252,7 +252,7 @@
         </div>
     </div>
 
-    <section id="terminal-section">
+        <section id="terminal-section">
         <div id="terminal" class="mono">
             <div id="boot-logs"></div>
             <div id="command-prompt" style="display:none;">
@@ -261,8 +261,8 @@
                 &gt; COORDINATES: 33.6189° N, 117.9298° W<br>
                 &gt; DATE_RANGE: 2024-12-24 → 2024-12-28<br>
                 <br><br>
+                <button id="override-btn" class="terminal-btn">EXECUTE_PROTOCOL_C</button>
             </div>
-            <button id="override-btn" class="terminal-btn">EXECUTE_PROTOCOL_C</button>
         </div>
     </section>
 
@@ -515,7 +515,49 @@
                 setTimeout(typeLog, 400);
             } else {
                 commandPrompt.style.display = 'block';
-                setupOverrideButton();
+                // Attach button listener immediately
+                const btn = document.getElementById('override-btn');
+                const ambientMusic = document.getElementById('ambient-music');
+                
+                if (btn) {
+                    console.log('Button found, attaching listener');
+                    btn.onclick = function() {
+                        console.log('BUTTON CLICKED!!!');
+                        
+                        // Start music
+                        ambientMusic.volume = 0;
+                        ambientMusic.play().then(() => {
+                            let v = 0;
+                            let fade = setInterval(() => {
+                                if(v < 0.25) { 
+                                    v += 0.008; 
+                                    ambientMusic.volume = v; 
+                                } else {
+                                    clearInterval(fade);
+                                }
+                            }, 100);
+                        }).catch(e => console.log('Audio blocked:', e));
+                        
+                        commandPrompt.innerHTML = "&gt; OVERRIDE_ACCEPTED.<br>&gt; PROTOCOL_C_ACTIVE.";
+                        setTimeout(() => {
+                            terminalSection.style.display = 'none';
+                            odysseyContent.style.display = 'block';
+                            window.scrollTo(0, 0);
+                            setTimeout(() => {
+                                let scrollSpeed = 2;
+                                function descent() {
+                                    window.scrollBy(0, scrollSpeed);
+                                    if (window.scrollY < window.innerHeight * 1.2) {
+                                        requestAnimationFrame(descent);
+                                    }
+                                }
+                                descent();
+                            }, 100);
+                        }, 1500);
+                    };
+                } else {
+                    console.log('BUTTON NOT FOUND!');
+                }
             }
         }
 
