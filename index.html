@@ -602,7 +602,8 @@
         // Need to wait for button to exist before adding listener
         function setupOverrideButton() {
             const btn = document.getElementById('override-btn');
-            const ambientMusic = document.getElementById('ambient-music');
+            const ambientMusic = new Audio('assets/spiegel.mp3');
+            ambientMusic.loop = true;
             console.log('Setting up button:', btn);
             if (btn) {
                 btn.addEventListener('click', function(e) {
