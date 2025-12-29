@@ -57,15 +57,46 @@
 
         .scramble { 
             display: inline-block; 
-            animation: scramble 0.15s infinite; 
+            animation: glitch-jump 0.6s ease-out forwards; 
             color: #f00 !important; 
             font-family: 'JetBrains Mono', monospace !important;
         }
+        @keyframes glitch-jump {
+            0% { transform: translate(0, 0) scale(1); }
+            20% { transform: translate(3px, -5px) scale(1.05) rotate(-1deg); }
+            40% { transform: translate(8px, -12px) scale(1.08) rotate(1deg); }
+            60% { transform: translate(12px, -18px) scale(1.1) rotate(-0.5deg); }
+            80% { transform: translate(15px, -22px) scale(1.05) rotate(0.5deg); }
+            100% { transform: translate(18px, -24px) scale(1) rotate(0deg); }
+        }
+        
         @keyframes scramble {
             0% { transform: translate(0, 0); }
             33% { transform: translate(-2px, 1px); }
             66% { transform: translate(1px, -2px); }
             100% { transform: translate(0, 0); }
+        }
+
+        .collapse-text {
+            display: inline-block;
+            animation: collapse-in 2s ease-in-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes collapse-in {
+            0% { 
+                transform: scale(3) translateY(-100vh);
+                opacity: 0;
+                letter-spacing: 2em;
+            }
+            60% {
+                opacity: 1;
+            }
+            100% { 
+                transform: scale(1) translateY(0);
+                opacity: 1;
+                letter-spacing: normal;
+            }
         }
         
         .spacer { height: 100vh; }
@@ -84,6 +115,17 @@
         #terminal { 
             font-size: 15px; line-height: 1.8; color: #0f0; 
             width: 90%; max-width: 900px;
+        }
+        
+        #map-container {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 25px rgba(15,255,15,0.4);
+            margin: 2rem auto;
+            position: relative;
+            z-index: 1;
         }
         
         .terminal-btn {
@@ -218,9 +260,9 @@
                 &gt; LOCATION: Star_Inn | 2642 Newport Blvd, Costa Mesa, CA<br>
                 &gt; COORDINATES: 33.6189° N, 117.9298° W<br>
                 &gt; DATE_RANGE: 2024-12-24 → 2024-12-28<br>
-                <div id="map-container"></div>
-                <button id="override-btn" class="terminal-btn">EXECUTE_PROTOCOL_C</button>
+                <br><br>
             </div>
+            <button id="override-btn" class="terminal-btn">EXECUTE_PROTOCOL_C</button>
         </div>
     </section>
 
@@ -231,7 +273,12 @@
         <section class="h-screen flex items-center justify-center px-6 reveal">
             <div class="text-center">
                 <h1 class="text-5xl md:text-8xl font-bold tracking-tighter fade-in uppercase leading-tight text-shadow mb-8">
-                    This was built<br>without a roof.
+                    <span class="collapse-text" style="animation-delay: 0s;">This</span> 
+                    <span class="collapse-text" style="animation-delay: 0.1s;">was</span> 
+                    <span class="collapse-text" style="animation-delay: 0.2s;">built</span><br>
+                    <span class="collapse-text" style="animation-delay: 0.3s;">without</span> 
+                    <span class="collapse-text" style="animation-delay: 0.4s;">a</span> 
+                    <span class="collapse-text" style="animation-delay: 0.5s;">roof.</span>
                 </h1>
                 <p class="text-2xl md:text-3xl text-gray-400 fade-in mono text-shadow">
                     A motel lobby. A tree canopy. A checkout deadline.
@@ -431,34 +478,9 @@
     <script>
         const terminalSection = document.getElementById('terminal-section');
         const odysseyContent = document.getElementById('odyssey-content');
-        const overrideBtn = document.getElementById('override-btn');
         const bootContainer = document.getElementById('boot-logs');
         const commandPrompt = document.getElementById('command-prompt');
         
-        function initMap() {
-            const starInn = [33.6189, -117.9298];
-            
-            const map = L.map('map-container', {
-                center: starInn,
-                zoom: 17,
-                zoomControl: true
-            });
-            
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap contributors',
-                maxZoom: 19
-            }).addTo(map);
-            
-            const marker = L.marker(starInn, {
-                icon: L.divIcon({
-                    className: 'custom-marker',
-                    html: '<div style="width: 20px; height: 20px; background: #0f0; border-radius: 50%; box-shadow: 0 0 20px #0f0;"></div>',
-                    iconSize: [20, 20]
-                })
-            }).addTo(map);
-            
-            marker.bindPopup('<div style="color: #0f0; background: #000; padding: 10px; font-family: monospace; border: 1px solid #0f0;">STAR INN<br>Protocol C Origin<br>33.6189°N, 117.9298°W</div>');
-        }
         
         function scrambleText(element, final, duration) {
             const chars = '!@#$%^&*()_+<>?█▓▒░';
@@ -499,8 +521,7 @@
                 setTimeout(typeLog, 400);
             } else {
                 commandPrompt.style.display = 'block';
-                initMap();
-                setupOverrideButton(); // Call this after the button is rendered
+                setupOverrideButton();
             }
         }
 
