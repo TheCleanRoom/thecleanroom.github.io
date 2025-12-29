@@ -4,24 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protocol C: A Study in Quantized Model Stability</title>
-    <link rel="preload" as="image" href="https://stsci-opia.org/STScI-01H449193V16Q4JBXV49HWVFXB.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Inter:wght@300;400;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            background: 
-                linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
-                url('https://stsci-opia.org/STScI-01H449193V16Q4JBXV49HWVFXB.png') no-repeat center center fixed;
-            background-size: cover;
+            background: #000;
             color: #fff; 
             font-family: 'Inter', sans-serif; 
             overflow-x: hidden;
             transition: background 2s ease;
         }
         
-        /* Fallback starfield if JWST doesn't load */
+        /* JWST Background - loads after glitch */
+        body.space-mode {
+            background: 
+                linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('https://webbtelescope.org/files/live/sites/webb/files/home/webb-science/early-highlights/_images/STSCI-J-p23128a-4000px.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        
+        /* Fallback starfield */
         body::after {
             content: '';
             position: fixed;
@@ -36,9 +40,12 @@
                 radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.15), transparent),
                 radial-gradient(2px 2px at 90% 60%, rgba(255,255,255,0.1), transparent),
                 radial-gradient(1px 1px at 15% 90%, rgba(255,255,255,0.2), transparent),
-                radial-gradient(2px 2px at 35% 20%, rgba(255,255,255,0.1), transparent);
+                radial-gradient(2px 2px at 35% 20%, rgba(255,255,255,0.1), transparent),
+                radial-gradient(1px 1px at 25% 80%, rgba(255,255,255,0.2), transparent),
+                radial-gradient(2px 2px at 70% 40%, rgba(255,255,255,0.1), transparent);
             pointer-events: none;
-            z-index: -1;
+            z-index: 0;
+            opacity: 0.5;
         }
         
         .mono { font-family: 'JetBrains Mono', monospace; }
@@ -91,32 +98,6 @@
         }
         
         /* Glitch Effect */
-        .glitch {
-            position: relative;
-            animation: glitch 0.3s infinite;
-        }
-        
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-        
-        .glitch-text {
-            animation: glitch-text 0.5s infinite;
-        }
-        
-        @keyframes glitch-text {
-            0% { opacity: 1; }
-            25% { opacity: 0.8; color: #f00; }
-            50% { opacity: 1; color: #0f0; }
-            75% { opacity: 0.8; color: #00f; }
-            100% { opacity: 1; }
-        }
-        
         .scramble {
             display: inline-block;
             animation: scramble 0.1s infinite;
@@ -131,7 +112,7 @@
             100% { transform: translate(0, 0); }
         }
         
-        /* 17776 Style - Hidden Initially */
+        /* 17776 Style */
         .spacer { height: 100vh; }
         .deep-spacer { height: 200vh; }
         
@@ -203,32 +184,6 @@
             color: #888;
             margin-top: 1rem;
         }
-
-        /* Audio Control */
-        #audio-control {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: #fff;
-            cursor: pointer;
-            z-index: 100;
-            display: none;
-            transition: all 0.3s ease;
-        }
-
-        #audio-control:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        #audio-control.active {
-            display: block;
-        }
     </style>
 </head>
 <body class="academic-mode">
@@ -276,7 +231,7 @@
         </div>
     </div>
 
-    <!-- TERMINAL INTERRUPTION (Hidden Initially) -->
+    <!-- TERMINAL INTERRUPTION -->
     <section class="h-screen flex flex-col justify-center px-12 md:px-24 section-container odyssey-section" style="display: none;" id="terminal-section">
         <div id="terminal" class="mono">
             <div id="boot-logs"></div>
@@ -284,7 +239,6 @@
         </div>
     </section>
 
-    <!-- Deep Space -->
     <div class="deep-spacer odyssey-section" style="display: none;"></div>
 
     <!-- The Revelation -->
@@ -294,7 +248,6 @@
         </h1>
     </section>
 
-    <!-- Space -->
     <div class="spacer odyssey-section"></div>
 
     <!-- The Negation -->
@@ -306,7 +259,6 @@
         </div>
     </section>
 
-    <!-- Space -->
     <div class="spacer odyssey-section"></div>
 
     <!-- The Location -->
@@ -316,7 +268,6 @@
         <p class="text-xl text-gray-600 fade-in mono">Star Inn. December 24-28, 2024.</p>
     </section>
 
-    <!-- Deep Space -->
     <div class="deep-spacer odyssey-section"></div>
 
     <!-- The Question -->
@@ -325,7 +276,6 @@
         <p class="text-xl md:text-2xl text-gray-500 max-w-2xl fade-in">Four nights. One checkout deadline. Zero fallback options.</p>
     </section>
 
-    <!-- Space -->
     <div class="spacer odyssey-section"></div>
 
     <!-- Packet Animation Section -->
@@ -341,10 +291,8 @@
         </div>
     </section>
 
-    <!-- Canvas for packet animation -->
     <canvas id="packet-canvas"></canvas>
 
-    <!-- Space -->
     <div class="spacer odyssey-section"></div>
 
     <!-- The Math -->
@@ -359,7 +307,6 @@
         </p>
     </section>
 
-    <!-- Space -->
     <div class="spacer odyssey-section"></div>
 
     <!-- The Confession -->
@@ -384,7 +331,6 @@
         </div>
     </section>
 
-    <!-- Space -->
     <div class="deep-spacer odyssey-section"></div>
 
     <!-- The Results -->
@@ -410,7 +356,6 @@
         </div>
     </section>
 
-    <!-- Space -->
     <div class="spacer odyssey-section"></div>
 
     <!-- The Warning -->
@@ -424,7 +369,6 @@
         </div>
     </section>
 
-    <!-- Space -->
     <div class="spacer odyssey-section"></div>
 
     <!-- The Call to Action -->
@@ -440,28 +384,21 @@
         </div>
     </section>
 
-    <!-- Final Space -->
     <div class="spacer odyssey-section"></div>
 
-    <!-- Audio Control Button -->
-    <button id="audio-control">🔊 ENABLE SOUND</button>
-
-    <!-- Hidden Audio Element -->
+    <!-- Hidden Audio -->
     <audio id="ambient-music" loop>
-        <source src="/assets/spiegel.mp3" type="audio/mpeg">
+        <source src="assets/spiegel.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // DECEPTIVE OPENING SEQUENCE
         let glitchTriggered = false;
         let scrollStartTime = null;
         let hasScrolled = false;
         
-        // Detect mobile
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        const triggerTime = isMobile ? 500 : 1500; // 0.5s mobile, 1.5s desktop
+        const triggerTime = isMobile ? 500 : 1500;
         
-        // Word scrambling effect (17776 style)
         function scrambleText(element, originalText, duration) {
             const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
             let iterations = 0;
@@ -492,12 +429,9 @@
             if (glitchTriggered) return;
             glitchTriggered = true;
             
-            console.log('GLITCH TRIGGERED!');
-            
             const scrambleElement = document.getElementById('scramble-text');
             const glitchTrigger = document.getElementById('glitch-trigger');
             
-            // Start word scrambling
             if (scrambleElement) {
                 scrambleElement.classList.add('scramble');
                 scrambleText(scrambleElement, 'a university research facility', 800);
@@ -508,7 +442,6 @@
                 }, 1000);
             }
             
-            // Start glitch sequence
             setTimeout(() => {
                 if (glitchTrigger) glitchTrigger.style.display = 'none';
                 const glitchReveal = document.getElementById('glitch-reveal');
@@ -518,11 +451,29 @@
             setTimeout(() => {
                 const interruptText = document.getElementById('interrupt-text');
                 if (interruptText) interruptText.style.display = 'block';
+                
+                // START MUSIC HERE - fade in during glitch
+                const ambientMusic = document.getElementById('ambient-music');
+                if (ambientMusic) {
+                    ambientMusic.volume = 0;
+                    ambientMusic.play().catch(e => console.log('Audio blocked:', e));
+                    
+                    // Fade in over 3 seconds
+                    let vol = 0;
+                    const fadeIn = setInterval(() => {
+                        if (vol < 0.2) {
+                            vol += 0.005;
+                            ambientMusic.volume = vol;
+                        } else {
+                            clearInterval(fadeIn);
+                        }
+                    }, 100);
+                }
             }, 3500);
             
             setTimeout(() => {
-                // Transition to full odyssey mode
                 document.body.classList.remove('academic-mode');
+                document.body.classList.add('space-mode');
                 const paperMode = document.getElementById('paper-mode');
                 if (paperMode) {
                     paperMode.style.transition = 'opacity 1s ease';
@@ -532,23 +483,17 @@
                 setTimeout(() => {
                     if (paperMode) paperMode.style.display = 'none';
                     
-                    // Show terminal first
                     const terminalSection = document.getElementById('terminal-section');
                     const terminal = document.getElementById('terminal');
                     if (terminalSection) terminalSection.style.display = 'block';
                     if (terminal) terminal.classList.add('active');
                     typeLog();
                     
-                    // Show audio control after glitch
-                    const audioControl = document.getElementById('audio-control');
-                    if (audioControl) audioControl.classList.add('active');
-                    
-                    // Then activate rest of odyssey sections after terminal finishes
                     setTimeout(() => {
                         document.querySelectorAll('.odyssey-section').forEach(el => {
                             el.style.display = 'block';
                         });
-                    }, 4000); // Wait for terminal boot to finish
+                    }, 4000);
                 }, 1000);
             }, 5000);
         }
@@ -556,14 +501,11 @@
         window.addEventListener('scroll', () => {
             if (glitchTriggered) return;
             
-            // Start timer on first scroll
             if (!hasScrolled) {
                 hasScrolled = true;
                 scrollStartTime = Date.now();
-                console.log('User started scrolling, timer started');
             }
             
-            // Trigger based on device and scroll
             const scrolledTime = Date.now() - scrollStartTime;
             const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
             
@@ -572,7 +514,6 @@
             }
         });
 
-        // Terminal Boot Sequence
         const logs = [
             "> System override detected...",
             "> Establishing secure channel...",
@@ -596,30 +537,6 @@
             }
         }
 
-        // Audio Control
-        const audioControl = document.getElementById('audio-control');
-        const ambientMusic = document.getElementById('ambient-music');
-        let audioEnabled = false;
-
-        if (audioControl && ambientMusic) {
-            audioControl.addEventListener('click', () => {
-                if (!audioEnabled) {
-                    ambientMusic.volume = 0.3;
-                    ambientMusic.play().then(() => {
-                        audioEnabled = true;
-                        audioControl.textContent = '🔇 DISABLE SOUND';
-                    }).catch(e => {
-                        console.log('Audio play failed:', e);
-                    });
-                } else {
-                    ambientMusic.pause();
-                    audioEnabled = false;
-                    audioControl.textContent = '🔊 ENABLE SOUND';
-                }
-            });
-        }
-
-        // Intersection Observer for Fade-ins
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -632,7 +549,6 @@
 
         document.querySelectorAll('.reveal').forEach(section => observer.observe(section));
 
-        // Packet Animation
         const canvas = document.getElementById('packet-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -651,22 +567,21 @@
                 this.vy = (Math.random() - 0.5) * 2;
                 this.size = Math.random() * 3 + 2;
                 
-                // Assign packet type
                 const rand = Math.random();
                 if (rand < 0.40) {
-                    this.type = '00'; // NULL - 40%
+                    this.type = '00';
                     this.color = 'rgba(100, 100, 100, 0.3)';
                     this.fadeOut = true;
                 } else if (rand < 0.60) {
-                    this.type = '01'; // LOCAL TETHER - 20%
+                    this.type = '01';
                     this.color = 'rgba(74, 222, 128, 0.6)';
                     this.fadeOut = false;
                 } else if (rand < 0.75) {
-                    this.type = '10'; // GLOBAL ANCHOR - 15%
+                    this.type = '10';
                     this.color = 'rgba(96, 165, 250, 0.6)';
                     this.fadeOut = false;
                 } else {
-                    this.type = '11'; // GLOBAL SIGNAL - 25%
+                    this.type = '11';
                     this.color = 'rgba(248, 113, 113, 0.6)';
                     this.fadeOut = false;
                 }
@@ -700,22 +615,17 @@
 
         function animate() {
             if (!animationActive) return;
-            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
             packets.forEach(p => {
                 p.update();
                 p.draw();
             });
-            
             requestAnimationFrame(animate);
         }
 
-        // Start animation when packet section is visible
         const packetObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animationActive = true;
+                if (entry.isIntersecting) {animationActive = true;
                     canvas.classList.add('active');
                     animate();
                 } else {
