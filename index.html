@@ -547,9 +547,10 @@ function initMap() {
             setTimeout(() => {
                 terminalSection.style.display = 'none';
                 
-                // Show ALL odyssey sections by removing the class
-                document.querySelectorAll('.odyssey-section').forEach(el => {
-                    el.style.display = 'block';
+                // Show the main container and ALL children
+                odysseyContent.style.display = 'block';
+                odysseyContent.querySelectorAll('*').forEach(el => {
+                    el.style.display = '';  // Reset to default
                 });
                 
                 // Scroll to start the journey
