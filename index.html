@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protocol C: A Study in Quantized Model Stability</title>
@@ -436,36 +438,33 @@
         const bootContainer = document.getElementById('boot-logs');
         const commandPrompt = document.getElementById('command-prompt');
         
-        // Initialize Google Map
-        function initMap() {
-            const starInn = { lat: 33.6189, lng: -117.9298 };
-            const map = new google.maps.Map(document.getElementById('map-container'), {
-                zoom: 17,
-                center: starInn,
-                styles: [
-                    {elementType: 'geometry', stylers: [{color: '#0a0a0a'}]},
-                    {elementType: 'labels.text.stroke', stylers: [{color: '#0a0a0a'}]},
-                    {elementType: 'labels.text.fill', stylers: [{color: '#0f0'}]},
-                    {featureType: 'road', elementType: 'geometry', stylers: [{color: '#1a1a1a'}]},
-                    {featureType: 'road', elementType: 'labels.text.fill', stylers: [{color: '#0f0'}]},
-                    {featureType: 'water', elementType: 'geometry', stylers: [{color: '#001a00'}]},
-                ]
-            });
-            
-            new google.maps.Marker({
-                position: starInn,
-                map: map,
-                title: 'Star Inn - Protocol C Origin',
-                icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 8,
-                    fillColor: '#0f0',
-                    fillOpacity: 1,
-                    strokeColor: '#0f0',
-                    strokeWeight: 2
-                }
-            });
-        }
+     // Initialize OpenStreetMap with Leaflet
+function initMap() {
+    const starInn = [33.6189, -117.9298];
+    
+    const map = L.map('map-container', {
+        center: starInn,
+        zoom: 17,
+        zoomControl: true
+    });
+    
+    // Dark theme tiles
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+    
+    // Add glowing green marker
+    const marker = L.marker(starInn, {
+        icon: L.divIcon({
+            className: 'custom-marker',
+            html: '<div style="width: 20px; height: 20px; background: #0f0; border-radius: 50%; box-shadow: 0 0 20px #0f0;"></div>',
+            iconSize: [20, 20]
+        })
+    }).addTo(map);
+    
+    marker.bindPopup('<div style="color: #0f0; background: #000; padding: 10px; font-family: monospace; border: 1px solid #0f0;">STAR INN<br>Protocol C Origin<br>33.6189°N, 117.9298°W</div>');
+}
         
         function scrambleText(element, final, duration) {
             const chars = '!@#$%^&*()_+<>?█▓▒░';
@@ -532,3 +531,131 @@
                     }, 2500);
                 }, 1200);
             }
+});
+
+        overrideBtn.addEventListener('click', () => {
+            ambientMusic.volume = 0;
+            ambientMusic.play().then(() => {
+                let v = 0;
+                let fade = setInterval(() => {
+                    if(v < 0.25) { v += 0.008; ambientMusic.volume = v; }
+                    else clearInterval(fade);
+                }, 100);
+            }).catch(e => console.log('Audio blocked'));
+
+            commandPrompt.innerHTML = "&gt; OVERRIDE_ACCEPTED.<br>&gt; PROTOCOL_C_ACTIVE.";
+            setTimeout(() => {
+                terminalSection.style.display = 'none';
+                odysseyContent.style.display = 'block';
+                
+                let scrollSpeed = 2;
+                function descent() {
+                    window.scrollBy(0, scrollSpeed);
+                    if(window.scrollY < 2000) requestAnimationFrame(descent);
+                }
+                descent();
+            }, 1200);
+        });
+
+        // Interactive Demo Logic
+        function analyzeText() {
+            const input = document.getElementById('demo-input').value;
+            const output = document.getElementById('demo-output');
+            const words = input.split(/\s+/);
+            
+            let result = '&gt; ROUTING_ANALYSIS:<br><br>';
+            words.forEach((word, i) => {
+                const surprise = Math.random();
+                let tokenClass, label;
+                if (surprise < 0.4) {
+                    tokenClass = 'token-00';
+                    label = '00';
+                } else if (surprise < 0.7) {
+                    tokenClass = 'token-01';
+                    label = '01';
+                } else if (surprise < 0.85) {
+                    tokenClass = 'token-10';
+                    label = '10';
+                } else {
+                    tokenClass = 'token-11';
+                    label = '11';
+                }
+                result += `<span class="${tokenClass}">${word} [${label}]</span> `;
+            });
+            
+            output.innerHTML = result;
+        }
+
+        function loadPreset(n) {
+            const presets = {
+                1: "Protocol C achieves 6.31x speedup through intelligent token routing and variance-based surprise detection.",
+                2: "The quick brown fox jumps over the lazy dog while the researcher sleeps under a tree near South Coast Plaza."
+            };
+            document.getElementById('demo-input').value = presets[n];
+            analyzeText();
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.querySelectorAll('.fade-in').forEach((el, idx) => {
+                        setTimeout(() => el.classList.add('visible'), idx * 400);
+                    });
+                    if(entry.target.id === 'packet-section') {
+                        document.getElementById('packet-canvas').classList.add('active');
+                        startPackets();
+                    }
+                }
+            });
+        }, {threshold: 0.2});
+        
+        document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
+
+        const canvas = document.getElementById('packet-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        const packets = Array.from({length: 150}, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random()-0.5) * 2,
+            vy: (Math.random()-0.5) * 2,
+            size: Math.random() * 3 + 1,
+            type: Math.random() > 0.1 ? 'noise' : 'signal',
+            alpha: Math.random() > 0.1 ? 0.3 : 0.8
+        }));
+
+        let animActive = false;
+        function startPackets() {
+            if(!animActive) animActive = true;
+            animate();
+        }
+
+        function animate() {
+            if(!animActive) return;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            packets.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                
+                if(p.type === 'noise' && p.alpha > 0) p.alpha -= 0.002;
+                
+                ctx.fillStyle = p.type === 'noise' 
+                    ? `rgba(100,100,100,${p.alpha})` 
+                    : `rgba(74,222,128,${p.alpha})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+    </script>
+</body>
+</html>
