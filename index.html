@@ -500,6 +500,7 @@
             } else {
                 commandPrompt.style.display = 'block';
                 initMap();
+                setupOverrideButton(); // Call this after the button is rendered
             }
         }
 
@@ -541,25 +542,31 @@
             }, 1200);
         }
 
-        overrideBtn.addEventListener('click', () => {
-            commandPrompt.innerHTML = "&gt; OVERRIDE_ACCEPTED.<br>&gt; PROTOCOL_C_ACTIVE.";
-            setTimeout(() => {
-                terminalSection.style.display = 'none';
-                odysseyContent.style.display = 'block';
-                
-                window.scrollTo(0, 0);
-                setTimeout(() => {
-                    let scrollSpeed = 2;
-                    function descent() {
-                        window.scrollBy(0, scrollSpeed);
-                        if (window.scrollY < window.innerHeight * 1.2) {
-                            requestAnimationFrame(descent);
-                        }
-                    }
-                    descent();
-                }, 100);
-            }, 1500);
-        });
+        // Need to wait for button to exist before adding listener
+        function setupOverrideButton() {
+            const btn = document.getElementById('override-btn');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    commandPrompt.innerHTML = "&gt; OVERRIDE_ACCEPTED.<br>&gt; PROTOCOL_C_ACTIVE.";
+                    setTimeout(() => {
+                        terminalSection.style.display = 'none';
+                        odysseyContent.style.display = 'block';
+                        
+                        window.scrollTo(0, 0);
+                        setTimeout(() => {
+                            let scrollSpeed = 2;
+                            function descent() {
+                                window.scrollBy(0, scrollSpeed);
+                                if (window.scrollY < window.innerHeight * 1.2) {
+                                    requestAnimationFrame(descent);
+                                }
+                            }
+                            descent();
+                        }, 100);
+                    }, 1500);
+                });
+            }
+        }
 
         // Intersection Observer for fade-ins
         const observerOptions = {
