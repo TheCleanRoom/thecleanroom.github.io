@@ -545,10 +545,14 @@
         // Need to wait for button to exist before adding listener
         function setupOverrideButton() {
             const btn = document.getElementById('override-btn');
+            console.log('Setting up button:', btn);
             if (btn) {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click', function(e) {
+                    console.log('Button clicked!');
+                    e.preventDefault();
                     commandPrompt.innerHTML = "&gt; OVERRIDE_ACCEPTED.<br>&gt; PROTOCOL_C_ACTIVE.";
                     setTimeout(() => {
+                        console.log('Transitioning to odyssey...');
                         terminalSection.style.display = 'none';
                         odysseyContent.style.display = 'block';
                         
@@ -565,6 +569,9 @@
                         }, 100);
                     }, 1500);
                 });
+                console.log('Button listener attached');
+            } else {
+                console.log('Button not found!');
             }
         }
 
