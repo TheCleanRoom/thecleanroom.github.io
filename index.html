@@ -3,105 +3,545 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Clean Room</title>
-    <meta name="description" content="The Clean Room: Research hub for hardware-efficient AI architectures. Home of Protocol C and hygiene-native design principles.">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Protocol C: A Study in Quantized Model Stability</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Inter:wght@300;400;600&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #000000; }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Inter:wght@300;400;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background: 
+                linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)),
+                url('https://stsci-opia.org/STScI-01H449193V16Q4JBXV49HWVFXB.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden;
+            transition: background 2s ease;
+        }
+        
         .mono { font-family: 'JetBrains Mono', monospace; }
-        .section-border { border-top: 1px solid #e5e7eb; }
-        a { transition: all 0.2s ease; }
+        
+        /* Deceptive Academic Opening */
+        .academic-mode {
+            background: #fff;
+            color: #000;
+        }
+        
+        .academic-mode .paper-header {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .paper-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .paper-author {
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .paper-date {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .paper-abstract {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        .paper-abstract strong {
+            font-weight: bold;
+        }
+        
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+            animation: glitch 0.3s infinite;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .glitch-text {
+            animation: glitch-text 0.5s infinite;
+        }
+        
+        @keyframes glitch-text {
+            0% { opacity: 1; }
+            25% { opacity: 0.8; color: #f00; }
+            50% { opacity: 1; color: #0f0; }
+            75% { opacity: 0.8; color: #00f; }
+            100% { opacity: 1; }
+        }
+        
+        /* 17776 Style - Hidden Initially */
+        .spacer { height: 100vh; }
+        .deep-spacer { height: 200vh; }
+        
+        .fade-in { opacity: 0; transition: opacity 2s ease-in-out; }
+        .visible { opacity: 1; }
+        
+        #terminal { 
+            font-size: 14px; 
+            line-height: 1.8; 
+            color: #0f0; 
+            max-width: 800px;
+            display: none;
+        }
+        
+        #terminal.active { display: block; }
+        
+        .cursor { 
+            display: inline-block; 
+            width: 10px; 
+            height: 18px; 
+            background: #0f0; 
+            animation: blink 1s infinite; 
+            margin-left: 2px;
+        }
+        
+        @keyframes blink { 
+            0%, 49% { opacity: 1; } 
+            50%, 100% { opacity: 0; } 
+        }
+
+        /* Packet Animation Canvas */
+        #packet-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        #packet-canvas.active {
+            opacity: 1;
+        }
+
+        .section-container {
+            position: relative;
+            z-index: 20;
+        }
+        
+        .odyssey-section {
+            display: none;
+        }
+        
+        .odyssey-section.active {
+            display: block;
+        }
+
+        /* Math Display */
+        .math {
+            font-size: 2rem;
+            font-weight: 300;
+            font-family: 'JetBrains Mono', monospace;
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .math-sub {
+            font-size: 1rem;
+            color: #888;
+            margin-top: 1rem;
+        }
     </style>
 </head>
-<body class="max-w-3xl mx-auto px-6 py-12 md:py-24">
+<body class="academic-mode">
 
-    <!-- Terminal Status Bar -->
-    <div class="mono text-[10px] uppercase tracking-widest text-gray-400 mb-8">
-        > PROTOCOL C v0.3.0 | Status: Research Alpha | Location: Star Inn, Newport Beach
+    <!-- DECEPTIVE ACADEMIC OPENING -->
+    <div id="paper-mode" class="paper-header">
+        <h1 class="paper-title">Protocol C: A Study in Quantized Model Stability</h1>
+        <p class="paper-author">John Augustine Young</p>
+        <p class="paper-date">December 2024</p>
+        
+        <div class="paper-abstract">
+            <p style="margin-bottom: 1rem;"><strong>Abstract:</strong> This paper presents a novel approach to addressing numerical instability in heavily quantized mixture-of-experts architectures. Through the implementation of packet-switched attention routing and variance-aware gating mechanisms, we demonstrate significant improvements in model stability under 2-bit weight quantization constraints.</p>
+            
+            <p style="margin-bottom: 1rem;">Standard approaches to model quantization suffer from accumulated numerical errors and correlation instabilities that manifest as catastrophic degradation in inference quality. Our work introduces three core innovations: (1) dynamic variance monitoring through what we term the "Armen Guard" mechanism, (2) a local syntactic stabilization layer, and (3) recursive residual quantization for progressive error correction.</p>
+            
+            <p id="glitch-trigger" style="margin-bottom: 1rem;">The research was conducted over a four-day period at <span class="glitch-text">████████████████</span></p>
+            
+            <p style="margin-bottom: 1rem; display: none;" id="glitch-reveal">The research was conducted over a four-day period at <span style="text-decoration: line-through;">a university research facility</span> <span style="color: #f00;">a motel in Newport Beach</span></p>
+            
+            <p style="margin-bottom: 1rem; font-style: italic; color: #666; display: none;" id="interrupt-text">> Wait. This isn't a paper.</p>
+        </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="mono text-[10px] uppercase tracking-widest text-gray-400 mb-16 flex space-x-8">
-        <a href="index.html" class="text-black font-bold">INDEX</a>
-        <a href="protocol-c/index.html" class="hover:text-black transition">PROTOCOL-C SPEC</a>
-        <a href="https://github.com/augstentatious/UnSwagAI" class="hover:text-black transition" target="_blank">GITHUB ↗</a>
-    </nav>
-
-    <!-- Header -->
-    <header class="mb-20">
-        <h1 class="text-4xl font-semibold tracking-tight mb-4 text-black">The Clean Room</h1>
-        <blockquote class="text-xl text-gray-500 font-light italic border-l-2 border-black pl-6 my-8">
-            "Precision through architecture, not parameter count."
-        </blockquote>
-        <p class="text-lg text-gray-600 leading-relaxed">
-            An independent research space exploring efficiency and stability in quantized neural architectures.
-        </p>
-    </header>
-
-    <!-- Main Content -->
-    <main class="space-y-20">
-        
-        <!-- What We Build -->
-        <section>
-            <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-6">What We Build</h2>
-            <div class="space-y-6">
-                <p><strong class="font-semibold">Protocol C</strong> — A hardware-native routing architecture addressing numerical stability in 2-bit quantized models through structured signal processing.</p>
-                
-                <div class="pt-2">
-                    <a href="protocol-c/index.html" class="inline-block mono text-xs font-bold bg-gray-50 border border-gray-200 px-4 py-2 hover:bg-black hover:text-white transition">
-                        READ TECHNICAL SPECIFICATION →
-                    </a>
-                </div>
-                
-                <p class="text-gray-600"><span class="font-bold text-black">Core principle:</span> Solve problems with architectural constraints, not parameter scaling.</p>
-            </div>
-        </section>
-
-        <!-- Research Philosophy -->
-        <section class="section-border pt-12">
-            <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-6">Research Philosophy</h2>
-            <ul class="space-y-4">
-                <li class="flex items-start">
-                    <span class="mono text-xs mr-4 mt-1.5 text-gray-400">01</span>
-                    <span><strong class="font-semibold">Isolation-first design</strong> — Contain errors through module boundaries.</span>
-                </li>
-                <li class="flex items-start">
-                    <span class="mono text-xs mr-4 mt-1.5 text-gray-400">02</span>
-                    <span><strong class="font-semibold">Hardware-native optimization</strong> — Leverage actual compute primitives.</span>
-                </li>
-                <li class="flex items-start">
-                    <span class="mono text-xs mr-4 mt-1.5 text-gray-400">03</span>
-                    <span><strong class="font-semibold">Measurable stability</strong> — Every component has quantifiable metrics.</span>
-                </li>
-            </ul>
-        </section>
-
-        <!-- Current Work -->
-        <section class="section-border pt-12">
-            <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-6">Current Work</h2>
-            <p class="text-gray-600 mb-8">
-                Building variance-stable routing systems for heavily quantized (2-bit) mixture-of-experts models. 
-                Research conducted during the Star Inn sessions, Newport Beach, CA.
-            </p>
-            <a href="https://github.com/augstentatious/UnSwagAI" target="_blank" class="inline-block mono text-sm font-bold border-b-2 border-black hover:bg-black hover:text-white hover:border-black transition-colors pb-1 px-2">
-                VIEW REPOSITORY →
-            </a>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="mt-32 pt-12 border-t border-gray-100">
-        <div class="flex justify-between items-center">
-            <p class="mono text-[10px] text-gray-400 uppercase tracking-widest">
-                Maintained by John Augustine Young
-            </p>
-            <p class="mono text-[10px] text-gray-400 uppercase tracking-widest">
-                <a href="mailto:augstentatious@gmail.com" class="hover:text-black transition">CONTACT</a>
-            </p>
+    <!-- TERMINAL INTERRUPTION (Hidden Initially) -->
+    <section class="h-screen flex flex-col justify-center px-12 md:px-24 section-container odyssey-section">
+        <div id="terminal" class="mono">
+            <div id="boot-logs"></div>
+            <span class="cursor"></span>
         </div>
-    </footer>
+    </section>
 
+    <!-- Deep Space -->
+    <div class="spacer odyssey-section"></div>
+    <div class="deep-spacer odyssey-section"></div>
+
+    <!-- The Revelation -->
+    <section class="h-screen flex items-center justify-center px-6 reveal section-container odyssey-section">
+        <h1 class="text-4xl md:text-7xl font-bold tracking-tighter text-center fade-in" style="line-height: 1.2;">
+            This was built in a<br>motel lobby.
+        </h1>
+    </section>
+
+    <!-- Space -->
+    <div class="spacer odyssey-section"></div>
+
+    <!-- The Negation -->
+    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
+        <div class="max-w-2xl space-y-12">
+            <p class="text-2xl md:text-4xl text-gray-400 fade-in">Not a university lab.</p>
+            <p class="text-2xl md:text-4xl text-gray-400 fade-in">Not a tech company.</p>
+            <p class="text-2xl md:text-4xl text-gray-400 fade-in">Not even a coffee shop with good WiFi.</p>
+        </div>
+    </section>
+
+    <!-- Space -->
+    <div class="spacer odyssey-section"></div>
+
+    <!-- The Location -->
+    <section class="h-screen flex flex-col items-center justify-center reveal section-container odyssey-section">
+        <h2 class="text-3xl md:text-5xl font-light italic text-gray-500 fade-in mb-8">A motel.</h2>
+        <h2 class="text-3xl md:text-5xl font-light italic text-gray-500 fade-in mb-8">In Newport Beach.</h2>
+        <p class="text-xl text-gray-600 fade-in mono">Star Inn. December 24-28, 2024.</p>
+    </section>
+
+    <!-- Deep Space -->
+    <div class="deep-spacer odyssey-section"></div>
+
+    <!-- The Question -->
+    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
+        <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// THE PROBLEM</h3>
+        <p class="text-3xl md:text-5xl font-bold mb-6 fade-in max-w-3xl">Why do 2-bit models collapse?</p>
+        <p class="text-xl md:text-2xl text-gray-500 max-w-2xl fade-in">Four nights. One checkout deadline. Zero fallback options.</p>
+    </section>
+
+    <!-- Space -->
+    <div class="spacer odyssey-section"></div>
+
+    <!-- Packet Animation Section -->
+    <section id="packet-section" class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
+        <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// PACKET-SWITCHED ATTENTION</h3>
+        <p class="text-2xl md:text-3xl font-bold mb-6 fade-in">Standard attention processes everything.</p>
+        <p class="text-2xl md:text-3xl text-gray-500 mb-12 fade-in">Protocol C ignores 40% of it.</p>
+        <div class="mono text-sm text-gray-400 space-y-2 fade-in">
+            <p><span style="color: #666;">00 | NULL</span> → High-confidence noise. Pruned entirely.</p>
+            <p><span style="color: #4ade80;">01 | LOCAL TETHER</span> → Syntax. CNN path. O(N).</p>
+            <p><span style="color: #60a5fa;">10 | GLOBAL ANCHOR</span> → Summary register. O(1).</p>
+            <p><span style="color: #f87171;">11 | GLOBAL SIGNAL</span> → Sparse attention. ~25%.</p>
+        </div>
+    </section>
+
+    <!-- Canvas for packet animation -->
+    <canvas id="packet-canvas"></canvas>
+
+    <!-- Space -->
+    <div class="spacer odyssey-section"></div>
+
+    <!-- The Math -->
+    <section class="h-screen flex flex-col justify-center items-center px-12 reveal section-container odyssey-section">
+        <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-12 mono fade-in">// THE SOLUTION</h3>
+        <div class="math fade-in">
+            h<sub>out</sub> = Ux + W*x<sub>conj</sub>
+        </div>
+        <p class="math-sub fade-in max-w-2xl text-center">
+            Widely-Linear Isomorphism captures non-circular patterns<br>
+            that standard complex networks miss.
+        </p>
+    </section>
+
+    <!-- Space -->
+    <div class="spacer odyssey-section"></div>
+
+    <!-- The Confession -->
+    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
+        <div class="max-w-2xl space-y-8 mono text-lg">
+            <p class="fade-in" style="color: #888;">> You're probably wondering about the methodology.</p>
+            <p class="fade-in text-gray-300">There was no lab. No grant. No compute cluster.</p>
+            <p class="fade-in text-gray-300">Just a Google Colab notebook and a checkout deadline.</p>
+            
+            <p class="fade-in" style="color: #888;">> The gas station attendant gave me free coffee.</p>
+            <p class="fade-in text-gray-300">Luis. Chocolate macadamia nut. Every morning.</p>
+            
+            <p class="fade-in" style="color: #888;">> My phone was stolen after midnight mass on Christmas Eve.</p>
+            <p class="fade-in text-gray-300">10 backup codes. Written down before it happened. In a Chanel bag.</p>
+            <p class="fade-in text-gray-300">The only reason I could still push to GitHub.</p>
+            
+            <p class="fade-in" style="color: #888;">> This is how research happens when you have no other choice.</p>
+            <p class="fade-in text-gray-300">You solve the problem.</p>
+            <p class="fade-in text-gray-300">And you sleep outside anyway.</p>
+            
+            <p class="fade-in font-bold text-white">I did both.</p>
+        </div>
+    </section>
+
+    <!-- Space -->
+    <div class="deep-spacer odyssey-section"></div>
+
+    <!-- The Results -->
+    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
+        <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// PERFORMANCE</h3>
+        <div class="space-y-6 max-w-2xl">
+            <div class="fade-in">
+                <p class="mono text-gray-400 text-sm mb-2">Cold-start latency</p>
+                <p class="text-3xl font-bold">~360ms</p>
+            </div>
+            <div class="fade-in">
+                <p class="mono text-gray-400 text-sm mb-2">Variance stability (Armen Guard active)</p>
+                <p class="text-3xl font-bold">0.255</p>
+            </div>
+            <div class="fade-in">
+                <p class="mono text-gray-400 text-sm mb-2">Memory reduction (00 pruning)</p>
+                <p class="text-3xl font-bold">~40%</p>
+            </div>
+            <div class="fade-in">
+                <p class="mono text-gray-400 text-sm mb-2">Attention density</p>
+                <p class="text-3xl font-bold">25% <span class="text-lg text-gray-500">(vs 100% standard)</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Space -->
+    <div class="spacer odyssey-section"></div>
+
+    <!-- The Warning -->
+    <section class="h-screen flex items-center justify-center px-12 reveal section-container odyssey-section">
+        <div class="max-w-2xl text-center space-y-8">
+            <p class="text-3xl font-bold fade-in" style="color: #ef4444;">Protocol C is not production-ready.</p>
+            <p class="text-3xl font-bold fade-in" style="color: #ef4444;">Protocol C will never be "production-ready."</p>
+            <p class="text-2xl text-gray-400 fade-in mt-12">It's a proof.</p>
+            <p class="text-xl text-gray-500 fade-in">A proof that the problem is architectural, not mathematical.</p>
+            <p class="text-xl text-gray-500 fade-in">What you build with this proof is up to you.</p>
+        </div>
+    </section>
+
+    <!-- Space -->
+    <div class="spacer odyssey-section"></div>
+
+    <!-- The Call to Action -->
+    <section class="h-screen flex flex-col items-center justify-center px-12 reveal section-container odyssey-section">
+        <p class="mono text-gray-400 mb-12 fade-in">> If you've made it this far, you're serious.</p>
+        <div class="flex flex-col md:flex-row gap-6 fade-in">
+            <a href="https://github.com/augstentatious/UnSwagAI" target="_blank" class="mono text-sm font-bold bg-white text-black px-8 py-4 hover:bg-gray-200 transition text-center">
+                VIEW THE CODE →
+            </a>
+            <a href="mailto:augstentatious@gmail.com" class="mono text-sm font-bold border border-white text-white px-8 py-4 hover:bg-white hover:text-black transition text-center">
+                CONTACT
+            </a>
+        </div>
+    </section>
+
+    <!-- Final Space -->
+    <div class="spacer odyssey-section"></div>
+
+    <script>
+        // DECEPTIVE OPENING SEQUENCE
+        let glitchTriggered = false;
+        
+        window.addEventListener('scroll', () => {
+            if (glitchTriggered) return;
+            
+            const glitchTrigger = document.getElementById('glitch-trigger');
+            if (!glitchTrigger) return;
+            
+            const rect = glitchTrigger.getBoundingClientRect();
+            
+            // When user scrolls to the glitch trigger paragraph
+            if (rect.top < window.innerHeight * 0.8 && !glitchTriggered) {
+                glitchTriggered = true;
+                
+                // Start glitch sequence
+                setTimeout(() => {
+                    glitchTrigger.style.display = 'none';
+                    document.getElementById('glitch-reveal').style.display = 'block';
+                }, 1000);
+                
+                setTimeout(() => {
+                    document.getElementById('interrupt-text').style.display = 'block';
+                }, 2500);
+                
+                setTimeout(() => {
+                    // Transition to full odyssey mode
+                    document.body.classList.remove('academic-mode');
+                    document.getElementById('paper-mode').style.transition = 'opacity 1s ease';
+                    document.getElementById('paper-mode').style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        document.getElementById('paper-mode').style.display = 'none';
+                        
+                        // Activate all odyssey sections
+                        document.querySelectorAll('.odyssey-section').forEach(el => {
+                            el.classList.add('active');
+                        });
+                        
+                        // Start terminal boot
+                        document.getElementById('terminal').classList.add('active');
+                        typeLog();
+                    }, 1000);
+                }, 4000);
+            }
+        });
+
+        // Terminal Boot Sequence
+        const logs = [
+            "> System override detected...",
+            "> Establishing secure channel...",
+            "> Loading research_log.txt",
+            "> Source: Star_Inn_Newport_Beach",
+            "> Date: 2024-12-24 → 2024-12-28",
+            "",
+            "> Connection established."
+        ];
+        
+        let i = 0;
+        const container = document.getElementById('boot-logs');
+        
+        function typeLog() {
+            if (i < logs.length) {
+                const line = document.createElement('div');
+                line.textContent = logs[i];
+                container.appendChild(line);
+                i++;
+                setTimeout(typeLog, 600);
+            }
+        }
+
+        // Intersection Observer for Fade-ins
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.fade-in').forEach((el, index) => {
+                        setTimeout(() => el.classList.add('visible'), index * 400);
+                    });
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.reveal').forEach(section => observer.observe(section));
+
+        // Packet Animation
+        const canvas = document.getElementById('packet-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Packet {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.size = Math.random() * 3 + 2;
+                
+                // Assign packet type
+                const rand = Math.random();
+                if (rand < 0.40) {
+                    this.type = '00'; // NULL - 40%
+                    this.color = 'rgba(100, 100, 100, 0.3)';
+                    this.fadeOut = true;
+                } else if (rand < 0.60) {
+                    this.type = '01'; // LOCAL TETHER - 20%
+                    this.color = 'rgba(74, 222, 128, 0.6)';
+                    this.fadeOut = false;
+                } else if (rand < 0.75) {
+                    this.type = '10'; // GLOBAL ANCHOR - 15%
+                    this.color = 'rgba(96, 165, 250, 0.6)';
+                    this.fadeOut = false;
+                } else {
+                    this.type = '11'; // GLOBAL SIGNAL - 25%
+                    this.color = 'rgba(248, 113, 113, 0.6)';
+                    this.fadeOut = false;
+                }
+                
+                this.alpha = this.fadeOut ? 0.3 : 0.8;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                if (this.fadeOut && this.alpha > 0) {
+                    this.alpha -= 0.002;
+                }
+            }
+
+            draw() {
+                if (this.alpha <= 0) return;
+                ctx.fillStyle = this.color.replace(/[\d.]+\)$/, `${this.alpha})`);
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const packets = Array.from({ length: 150 }, () => new Packet());
+        let animationActive = false;
+
+        function animate() {
+            if (!animationActive) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            packets.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+
+        // Start animation when packet section is visible
+        const packetObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animationActive = true;
+                    canvas.classList.add('active');
+                    animate();
+                } else {
+                    animationActive = false;
+                    canvas.classList.remove('active');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const packetSection = document.getElementById('packet-section');
+        if (packetSection) {
+            packetObserver.observe(packetSection);
+        }
+    </script>
 </body>
 </html>
