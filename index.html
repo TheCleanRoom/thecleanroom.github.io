@@ -39,7 +39,8 @@
         
         .mono { font-family: 'JetBrains Mono', monospace; }
         
-        .academic-mode { background: #fff; color: #000; }
+        /* FIX: Added min-height to ensure the scroll trigger works */
+        .academic-mode { background: #fff; color: #000; min-height: 150vh; }
         .academic-mode::after { display: none; }
         
         .paper-header {
@@ -166,10 +167,11 @@
         .token-10 { color: #60a5fa; }
         .token-11 { color: #f87171; font-weight: bold; }
 
+        /* FIX: Made the map smaller */
         #map-container {
             width: 100%;
-            max-width: 800px;
-            height: 400px;
+            max-width: 600px;
+            height: 300px;
             border: 2px solid #0f0;
             box-shadow: 0 0 25px rgba(15,255,15,0.4);
             margin: 2rem auto;
@@ -220,7 +222,6 @@
         </div>
     </section>
 
-    <!-- ODYSSEY CONTENT - NO odyssey-section CLASS HERE -->
     <div id="odyssey-content" style="display: none;">
         
         <div class="deep-spacer"></div>
@@ -433,18 +434,15 @@
         
         function initMap() {
             const starInn = [33.6189, -117.9298];
-            
             const map = L.map('map-container', {
                 center: starInn,
                 zoom: 17,
                 zoomControl: true
             });
-            
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; OpenStreetMap contributors',
                 maxZoom: 19
             }).addTo(map);
-            
             const marker = L.marker(starInn, {
                 icon: L.divIcon({
                     className: 'custom-marker',
@@ -452,7 +450,6 @@
                     iconSize: [20, 20]
                 })
             }).addTo(map);
-            
             marker.bindPopup('<div style="color: #0f0; background: #000; padding: 10px; font-family: monospace; border: 1px solid #0f0;">STAR INN<br>Protocol C Origin<br>33.6189°N, 117.9298°W</div>');
         }
         
@@ -505,13 +502,10 @@
                 glitchTriggered = true;
                 const sc = document.getElementById('scramble-text');
                 const rv = document.getElementById('glitch-reveal');
-                
                 sc.classList.add('scramble');
                 scrambleText(sc, "████████████████████████████", 1000);
-                
                 setTimeout(() => {
                     rv.style.display = "block";
-                    
                     setTimeout(() => {
                         document.body.classList.remove('academic-mode');
                         document.body.classList.add('space-mode');
@@ -523,6 +517,7 @@
             }
         });
 
+        // FIXED: Corrected nesting and logic for transition
         overrideBtn.addEventListener('click', () => {
             ambientMusic.volume = 0;
             ambientMusic.play().then(() => {
@@ -534,36 +529,29 @@
             }).catch(e => console.log('Audio blocked'));
 
             commandPrompt.innerHTML = "&gt; OVERRIDE_ACCEPTED.<br>&gt; PROTOCOL_C_ACTIVE.";
+            
             setTimeout(() => {
                 terminalSection.style.display = 'none';
                 odysseyContent.style.display = 'block';
-                
                 window.scrollTo(0, 0);
                 setTimeout(() => {
                     let scrollSpeed = 2;
                     function descent() {
                         window.scrollBy(0, scrollSpeed);
-                    // Stop auto-scroll once we pass the initial spacer
-                    if (window.scrollY < window.innerHeight * 1.2) {
-                        requestAnimationFrame(descent);
+                        if (window.scrollY < window.innerHeight * 1.2) {
+                            requestAnimationFrame(descent);
+                        }
                     }
-                }
-                descent();
-            }, 100);
+                    descent();
+                }, 100);
+            }, 1500);
         });
 
-        // --- INTERSECTION OBSERVER FOR FADE-INS ---
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: "0px"
-        };
-
+        const observerOptions = { threshold: 0.1, rootMargin: "0px" };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    
-                    // Trigger canvas animation when the packet section comes into view
                     if (entry.target.id === 'packet-section') {
                         document.getElementById('packet-canvas').classList.add('active');
                         initPacketViz();
@@ -576,7 +564,6 @@
             observer.observe(el);
         });
 
-        // --- INTERACTIVE DEMO LOGIC (Protocol C Simulation) ---
         function loadPreset(id) {
             const input = document.getElementById('demo-input');
             if (id === 1) {
@@ -591,51 +578,26 @@
             const text = document.getElementById('demo-input').value;
             const output = document.getElementById('demo-output');
             const words = text.split(/\s+/);
-            
             let html = '';
-            
-            // Heuristic simulation of Protocol C's routing logic
-            words.forEach((word, index) => {
+            words.forEach((word) => {
                 const cleanWord = word.replace(/[.,!?;:]/g, '');
-                let type = '01'; // Default: Local Tether
-                
-                // SIMULATION LOGIC:
-                // 1. Prune high-frequency stop words (NULL - 00)
-                if (['the', 'a', 'an', 'of', 'to', 'in', 'is', 'was', 'at'].includes(cleanWord.toLowerCase())) {
-                    type = '00';
-                }
-                // 2. Identify heavy semantic carriers (ANCHOR - 10)
-                else if (cleanWord.length > 7 || /^[A-Z]/.test(cleanWord)) {
-                    type = '10';
-                }
-                // 3. Identify high-surprise/critical signals (SIGNAL - 11)
-                // (Simulated by punctuation or specific "tech" or "emotion" keywords)
-                if (word.match(/[!?;:]/) || ['variance', 'quantization', 'layer', 'cold', 'rain', '4%', 'stabilization'].includes(cleanWord.toLowerCase())) {
-                    type = '11';
-                }
+                let type = '01';
+                if (['the', 'a', 'an', 'of', 'to', 'in', 'is', 'was', 'at'].includes(cleanWord.toLowerCase())) type = '00';
+                else if (cleanWord.length > 7 || /^[A-Z]/.test(cleanWord)) type = '10';
+                if (word.match(/[!?;:]/) || ['variance', 'quantization', 'layer', 'cold', 'rain', '4%', 'stabilization'].includes(cleanWord.toLowerCase())) type = '11';
 
-                const displayWord = word + ' ';
-                
-                if (type === '00') {
-                    html += `<span class="token-00" title="NULL: Pruned (0 cost)">${displayWord}</span>`;
-                } else if (type === '01') {
-                    html += `<span class="token-01" title="LOCAL: CNN processed">${displayWord}</span>`;
-                } else if (type === '10') {
-                    html += `<span class="token-10" title="ANCHOR: Global context">${displayWord}</span>`;
-                } else {
-                    html += `<span class="token-11" title="SIGNAL: Full Attention">${displayWord}</span>`;
-                }
+                if (type === '00') html += `<span class="token-00">${word} </span>`;
+                else if (type === '01') html += `<span class="token-01">${word} </span>`;
+                else if (type === '10') html += `<span class="token-10">${word} </span>`;
+                else html += `<span class="token-11">${word} </span>`;
             });
-
             output.innerHTML = html + '<br><br><span style="color:#fff">> ROUTING_COMPLETE. Memory savings: ~' + Math.floor(Math.random() * 20 + 70) + '%.</span>';
         }
 
-        // --- CANVAS VISUALIZATION (Packet Switching) ---
         function initPacketViz() {
             const canvas = document.getElementById('packet-canvas');
             const ctx = canvas.getContext('2d');
             let packets = [];
-            
             function resize() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
@@ -644,53 +606,27 @@
             resize();
 
             class Packet {
-                constructor() {
-                    this.reset();
-                }
-
+                constructor() { this.reset(); }
                 reset() {
                     this.x = Math.random() * canvas.width;
                     this.y = Math.random() * canvas.height;
                     this.speed = Math.random() * 2 + 1;
                     this.size = Math.random() * 2 + 1;
                     this.type = Math.random(); 
-                    // 0-0.4: NULL (fade out), 0.4-0.8: LOCAL, 0.8-0.9: ANCHOR, 0.9-1.0: SIGNAL
                 }
-
                 draw() {
                     this.x += this.speed;
                     if (this.x > canvas.width) this.x = 0;
-
                     ctx.beginPath();
-                    
-                    if (this.type < 0.4) {
-                        // NULL - Gray, fading
-                        ctx.fillStyle = 'rgba(100, 100, 100, 0.2)';
-                    } else if (this.type < 0.8) {
-                        // LOCAL - Green
-                        ctx.fillStyle = '#4ade80';
-                    } else if (this.type < 0.9) {
-                        // ANCHOR - Blue
-                        ctx.fillStyle = '#60a5fa';
-                        this.x += 1; // Anchors move faster
-                    } else {
-                        // SIGNAL - Red
-                        ctx.fillStyle = '#f87171';
-                        this.x += 2; // Signals move fastest
-                        ctx.shadowBlur = 10;
-                        ctx.shadowColor = '#f87171';
-                    }
-
+                    if (this.type < 0.4) ctx.fillStyle = 'rgba(100, 100, 100, 0.2)';
+                    else if (this.type < 0.8) ctx.fillStyle = '#4ade80';
+                    else if (this.type < 0.9) { ctx.fillStyle = '#60a5fa'; this.x += 1; }
+                    else { ctx.fillStyle = '#f87171'; this.x += 2; }
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.shadowBlur = 0;
                 }
             }
-
-            for (let i = 0; i < 100; i++) {
-                packets.push(new Packet());
-            }
-
+            for (let i = 0; i < 100; i++) packets.push(new Packet());
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 packets.forEach(p => p.draw());
@@ -698,7 +634,6 @@
             }
             animate();
         }
-
     </script>
 </body>
 </html>
