@@ -17,215 +17,294 @@
             transition: background 2s ease;
         }
         
-        /* JWST Background - loads after glitch */
+        /* JWST Background - local asset */
         body.space-mode {
             background: 
-                linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),
                 url('assets/jwst.png') no-repeat center center fixed;
             background-size: cover;
         }
 
-        /* Starfield Fallback */
+        /* Starfield Fallback Animation */
         body::after {
             content: '';
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(white 1px, transparent 1px);
-            background-size: 50px 50px;
-            opacity: 0.1;
+            background-size: 80px 80px;
+            opacity: 0.05;
             z-index: 0;
             pointer-events: none;
         }
         
         .mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* Deceptive Academic Opening */
+        /* Deceptive Academic Opening - Standard Paper Styles */
         .academic-mode { background: #fff; color: #000; }
         .academic-mode::after { display: none; }
         
         .academic-mode .paper-header {
-            max-width: 650px; margin: 0 auto; padding: 4rem 2rem;
+            max-width: 700px; margin: 0 auto; padding: 6rem 2rem;
             font-family: 'Times New Roman', serif;
+            line-height: 1.5;
         }
         
-        .paper-title { font-size: 1.5rem; font-weight: bold; text-align: center; margin-bottom: 1rem; }
-        .paper-author { text-align: center; font-size: 1rem; margin-bottom: 2rem; }
-        .paper-abstract { font-size: 0.95rem; line-height: 1.6; text-align: justify; }
-        
+        .paper-title { font-size: 1.8rem; font-weight: bold; text-align: center; margin-bottom: 1.5rem; }
+        .paper-author { text-align: center; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .paper-date { text-align: center; font-size: 1rem; color: #555; margin-bottom: 3rem; }
+        .paper-abstract { font-size: 1rem; text-align: justify; margin-bottom: 2rem; }
+        .paper-content h2 { font-size: 1.2rem; margin: 2rem 0 1rem; text-transform: uppercase; }
+
         /* Glitch Styles */
-        .scramble { display: inline-block; animation: scramble 0.1s infinite; }
+        .scramble { display: inline-block; animation: scramble 0.15s infinite; color: #f00; }
         @keyframes scramble {
             0% { transform: translate(0, 0); }
-            25% { transform: translate(-2px, 1px); }
-            50% { transform: translate(1px, -1px); }
-            75% { transform: translate(-1px, 2px); }
+            33% { transform: translate(-3px, 2px); }
+            66% { transform: translate(2px, -2px); }
             100% { transform: translate(0, 0); }
         }
         
-        /* 17776 Layout */
+        /* 17776 Layout Mechanics */
         .spacer { height: 100vh; }
-        .deep-spacer { height: 200vh; }
+        .deep-spacer { height: 250vh; }
+        .reveal { position: relative; z-index: 20; }
         
-        .fade-in { opacity: 0; transition: opacity 2s ease-in-out; }
+        .fade-in { opacity: 0; transition: opacity 2.5s ease-in-out; }
         .visible { opacity: 1; }
         
-        /* TERMINAL STYLES */
+        /* TERMINAL INTERFACE */
         #terminal-section {
-            position: relative;
-            z-index: 50;
-            display: none; /* Hidden until glitch activates it */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 100; display: none; /* Hidden until glitch */
+            background: #000; flex-direction: column; justify-content: center; align-items: center;
         }
 
         #terminal { 
-            font-size: 14px; line-height: 1.8; color: #0f0; 
-            max-width: 800px; margin: 0 auto;
+            font-size: 16px; line-height: 1.8; color: #0f0; 
+            width: 90%; max-width: 850px;
         }
         
         .terminal-btn {
-            background: none; border: none;
-            color: #0f0; font-family: 'JetBrains Mono', monospace;
-            font-size: 14px; font-weight: bold;
-            cursor: pointer;
-            text-decoration: underline;
-            animation: blink 1s infinite;
+            background: #0f0; border: none; color: #000;
+            padding: 5px 15px; font-family: 'JetBrains Mono', monospace;
+            font-weight: bold; cursor: pointer; margin-top: 20px;
+            box-shadow: 0 0 10px #0f0;
         }
-        .terminal-btn:hover { background: #0f0; color: #000; text-decoration: none; }
+        .terminal-btn:hover { background: #fff; box-shadow: 0 0 20px #fff; }
 
         .cursor { 
-            display: inline-block; width: 8px; height: 16px; 
-            background: #0f0; animation: blink 1s infinite; vertical-align: middle;
+            display: inline-block; width: 10px; height: 18px; 
+            background: #0f0; animation: blink 1s infinite;
         }
         @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
-        /* Packet Canvas */
+        /* Packet Canvas Overlay */
         #packet-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 10; opacity: 0; transition: opacity 1s ease;
+            pointer-events: none; z-index: 10; opacity: 0; transition: opacity 2s ease;
         }
         #packet-canvas.active { opacity: 1; }
 
-        .odyssey-section { display: none; }
-        .reveal { position: relative; z-index: 20; }
+        .odyssey-section { display: none; } /* Hidden until terminal override */
         
-        .math { font-size: 2rem; font-weight: 300; font-family: 'JetBrains Mono', monospace; text-align: center; }
+        .math { font-size: 2.5rem; font-weight: 300; font-family: 'JetBrains Mono', monospace; text-align: center; }
+        .math-sub { font-size: 1.2rem; color: #888; text-align: center; margin-top: 20px; }
     </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="academic-mode">
 
     <div id="paper-mode" class="paper-header">
         <h1 class="paper-title">Protocol C: A Study in Quantized Model Stability</h1>
-        <p class="paper-author">John Augustine Young &nbsp;|&nbsp; December 2024</p>
+        <p class="paper-author">John Augustine Young</p>
+        <p class="paper-date">December 28, 2025</p>
         
         <div class="paper-abstract">
-            <p style="margin-bottom: 1rem;"><strong>Abstract:</strong> This paper presents a novel approach to addressing numerical instability in heavily quantized mixture-of-experts architectures. Through the implementation of packet-switched attention routing...</p>
+            <p><strong>Abstract:</strong> This paper presents a novel approach to addressing numerical instability in heavily quantized mixture-of-experts architectures. Through the implementation of packet-switched attention routing and variance-aware gating mechanisms, we demonstrate significant improvements in model stability under 2-bit weight quantization constraints.</p>
+        </div>
+
+        <div class="paper-content">
+            <h2>1. Introduction</h2>
+            <p>The deployment of large language models in resource-constrained environments has become increasingly critical as computational demands scale exponentially. Quantization represents a promising avenue, yet aggressive reduction to 2-bit representations introduces fundamental challenges...</p>
             
-            <p style="margin-bottom: 2rem;"><strong>1. Introduction</strong></p>
-            <p style="margin-bottom: 1rem;">The deployment of large language models in resource-constrained environments has become increasingly critical...</p>
+            <h2>2. Methodology</h2>
+            <p>We introduce Protocol C, a packet-switched attention mechanism that discretizes token processing into four routing categories. This allows the model to allocate resources adaptively, processing noise with minimal overhead.</p>
             
-            <p style="margin-bottom: 2rem;"><strong>2. Experimental Setup</strong></p>
-            <p id="glitch-trigger" style="margin-bottom: 1rem;">The research was conducted over a four-day period at <span id="scramble-text">a university research facility</span></p>
+            <h2>3. Experimental Setup</h2>
+            <p id="glitch-trigger">The research was conducted over a four-day period at <span id="scramble-text">a university research facility</span>.</p>
             
-            <p style="margin-bottom: 1rem; display: none; color: #f00; font-family: 'JetBrains Mono';" id="glitch-reveal">ERROR: LOCATION_MISMATCH > STAR_INN</p>
+            <p id="glitch-reveal" style="display: none; color: #f00; font-family: 'JetBrains Mono'; font-weight: bold; margin-top: 20px;">
+                CRITICAL_ERROR: GEOGRAPHIC_DATA_MISMATCH<br>
+                TRACING_SOURCE... DONE.<br>
+                LOCATION_FOUND: STAR_INN_MOTEL_LOBBY
+            </p>
         </div>
     </div>
 
-    <section id="terminal-section" class="h-screen flex flex-col justify-center px-6">
+    <section id="terminal-section">
         <div id="terminal" class="mono">
             <div id="boot-logs"></div>
-            <div id="command-prompt" style="display:none; margin-top: 20px;">
-                > SYSTEM_LOCK DETECTED.<br>
-                > MANUAL OVERRIDE REQUIRED: <button id="override-btn" class="terminal-btn">[ EXECUTE_PROTOCOL_C ]</button>
+            <div id="command-prompt" style="display:none;">
+                <br>
+                > SYSTEM_LOCKED: MANUAL_OVERRIDE_REQUIRED<br>
+                > SOURCE: STAR_INN_NEWPORT_BEACH<br>
+                <button id="override-btn" class="terminal-btn">EXECUTE_BLINK_PROTOCOL</button>
             </div>
         </div>
     </section>
 
-    <div class="deep-spacer odyssey-section"></div>
+    <div id="odyssey-content" class="odyssey-section">
+        
+        <div class="deep-spacer"></div>
+        
+        <section class="h-screen flex items-center justify-center px-6 reveal">
+            <h1 class="text-5xl md:text-8xl font-bold tracking-tighter text-center fade-in uppercase leading-tight">
+                This was built in a<br>motel lobby.
+            </h1>
+        </section>
 
-    <section class="h-screen flex items-center justify-center px-6 reveal odyssey-section">
-        <h1 class="text-4xl md:text-7xl font-bold tracking-tighter text-center fade-in" style="line-height: 1.2;">
-            This was built in a<br>motel lobby.
-        </h1>
-    </section>
+        <div class="spacer"></div>
 
-    <div class="spacer odyssey-section"></div>
+        <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal">
+            <div class="max-w-3xl space-y-16">
+                <p class="text-4xl text-gray-400 fade-in">Not a university lab.</p>
+                <p class="text-4xl text-gray-400 fade-in">Not a tech company.</p>
+                <p class="text-4xl text-gray-400 fade-in">Not even a coffee shop with good WiFi.</p>
+            </div>
+        </section>
 
-    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal odyssey-section">
-        <div class="max-w-2xl space-y-12">
-            <p class="text-3xl text-gray-400 fade-in">Not a university lab.</p>
-            <p class="text-3xl text-gray-400 fade-in">Not a tech company.</p>
-            <p class="text-3xl text-gray-400 fade-in">Not even a coffee shop.</p>
-        </div>
-    </section>
+        <div class="spacer"></div>
 
-    <div class="spacer odyssey-section"></div>
+        <section class="h-screen flex flex-col items-center justify-center reveal">
+            <h2 class="text-4xl md:text-6xl font-light italic text-gray-500 fade-in mb-8">A motel.</h2>
+            <h2 class="text-4xl md:text-6xl font-light italic text-gray-500 fade-in mb-8">In Newport Beach.</h2>
+            <p class="text-2xl text-gray-600 fade-in mono">Star Inn. December 24-28, 2025.</p>
+        </section>
 
-    <section class="h-screen flex flex-col items-center justify-center reveal odyssey-section">
-        <h2 class="text-3xl md:text-5xl font-light italic text-gray-500 fade-in mb-8">Star Inn.</h2>
-        <h2 class="text-2xl md:text-4xl font-light italic text-gray-500 fade-in mb-8">Newport Beach, CA.</h2>
-        <p class="text-xl text-gray-600 fade-in mono">Dec 24-28, 2024</p>
-    </section>
+        <div class="deep-spacer"></div>
 
-    <div class="deep-spacer odyssey-section"></div>
+        <section class="h-screen flex flex-col justify-center px-12 reveal">
+            <p class="text-4xl md:text-6xl font-bold mb-8 fade-in max-w-4xl">Why do 2-bit models collapse?</p>
+            <p class="text-2xl text-gray-500 fade-in max-w-2xl italic">Four nights. One checkout deadline. Zero fallback options.</p>
+        </section>
 
-    <section class="h-screen flex flex-col justify-center px-12 reveal odyssey-section">
-        <p class="text-3xl md:text-5xl font-bold mb-6 fade-in">Why do 2-bit models collapse?</p>
-        <p class="text-xl text-gray-500 fade-in">Four nights. One deadline. Zero fallback.</p>
-    </section>
+        <div class="spacer"></div>
 
-    <div class="spacer odyssey-section"></div>
+        <section id="packet-section" class="h-screen flex flex-col justify-center px-12 md:px-24 reveal">
+            <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// PACKET-SWITCHED ATTENTION</h3>
+            <p class="text-3xl font-bold mb-6 fade-in">Standard attention processes everything.</p>
+            <p class="text-3xl text-gray-500 mb-12 fade-in">Protocol C ignores 40% of the noise.</p>
+            
+            <div class="mono text-lg text-gray-400 space-y-6 fade-in">
+                <p><span style="color: #666;">00 | NULL</span> &rarr; High-confidence noise. Pruned entirely.</p>
+                <p><span style="color: #4ade80;">01 | LOCAL TETHER</span> &rarr; Syntax. CNN path. O(N).</p>
+                <p><span style="color: #60a5fa;">10 | GLOBAL ANCHOR</span> &rarr; Summary register. O(1).</p>
+                <p><span style="color: #f87171;">11 | GLOBAL SIGNAL</span> &rarr; Sparse attention. ~25% density.</p>
+            </div>
+        </section>
 
-    <section id="packet-section" class="h-screen flex flex-col justify-center px-12 reveal odyssey-section">
-        <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// PACKET-SWITCHED ATTENTION</h3>
-        <p class="text-2xl font-bold mb-6 fade-in">Protocol C ignores 40% of the noise.</p>
-        <div class="mono text-sm text-gray-400 space-y-4 fade-in">
-            <p><span style="color: #666;">00 | NULL</span> → Pruned.</p>
-            <p><span style="color: #4ade80;">01 | TETHER</span> → Syntax (CNN).</p>
-            <p><span style="color: #60a5fa;">10 | ANCHOR</span> → Summary.</p>
-            <p><span style="color: #f87171;">11 | SIGNAL</span> → Attention.</p>
-        </div>
-    </section>
-    <canvas id="packet-canvas"></canvas>
+        <canvas id="packet-canvas"></canvas>
 
-    <div class="spacer odyssey-section"></div>
+        <div class="spacer"></div>
 
-    <section class="h-screen flex flex-col justify-center items-center px-12 reveal odyssey-section">
-        <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-12 mono fade-in">// THE SOLUTION</h3>
-        <div class="math fade-in">h<sub>out</sub> = Ux + W*x<sub>conj</sub></div>
-        <p class="text-center text-gray-500 mt-8 fade-in">Widely-Linear Isomorphism.</p>
-    </section>
+        <section class="h-screen flex flex-col justify-center items-center px-12 reveal">
+            <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-12 mono fade-in">// THE SOLUTION</h3>
+            <div class="math fade-in">h<sub>out</sub> = Ux + W*x<sub>conj</sub></div>
+            <p class="math-sub fade-in max-w-2xl">
+                Widely-Linear Isomorphism captures non-circular patterns<br>
+                that standard complex networks miss.
+            </p>
+        </section>
 
-    <div class="spacer odyssey-section"></div>
+        <div class="spacer"></div>
 
-    <section class="h-screen flex flex-col items-center justify-center px-12 reveal odyssey-section">
-        <p class="mono text-gray-400 mb-12 fade-in">> MISSION STATUS: COMPLETE</p>
-        <div class="flex gap-6 fade-in">
-            <a href="https://github.com/augstentatious/UnSwagAI" class="mono text-sm font-bold bg-white text-black px-8 py-4 hover:bg-gray-200">GITHUB</a>
-            <a href="mailto:augstentatious@gmail.com" class="mono text-sm font-bold border border-white text-white px-8 py-4 hover:bg-white hover:text-black">CONTACT</a>
-        </div>
-    </section>
+        <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal">
+            <div class="max-w-3xl space-y-12 mono text-xl leading-relaxed">
+                <p class="fade-in" style="color: #888;">> You're probably wondering about the methodology.</p>
+                <p class="fade-in text-gray-300">There was no lab. No grant. No compute cluster.</p>
+                <p class="fade-in text-gray-300">Just a Google Colab notebook and a checkout deadline.</p>
+                
+                <p class="fade-in" style="color: #888;">> The gas station attendant gave me free coffee.</p>
+                <p class="fade-in text-gray-300">Luis. Chocolate macadamia nut. Every morning at 6:00 AM.</p>
+                
+                <p class="fade-in" style="color: #888;">> My phone was stolen after midnight mass on Christmas Eve.</p>
+                <p class="fade-in text-gray-300">10 backup codes. Written down on a notepad. Stashed in a Chanel bag.</p>
+                <p class="fade-in text-gray-300">The only reason I could still push this code to GitHub.</p>
+                
+                <p class="fade-in" style="color: #888;">> This is how research happens when you have no other choice.</p>
+                <p class="fade-in text-gray-300">You solve the problem.</p>
+                <p class="fade-in text-gray-300">And sometimes you still sleep outside.</p>
+                
+                <p class="fade-in font-bold text-white text-3xl mt-8">I did both.</p>
+            </div>
+        </section>
+
+        <div class="deep-spacer"></div>
+
+        <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal">
+            <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-12 mono fade-in">// FINAL REPORT</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl">
+                <div class="fade-in">
+                    <p class="mono text-gray-500 text-sm uppercase mb-2">Cold-start latency</p>
+                    <p class="text-5xl font-bold">~360ms</p>
+                </div>
+                <div class="fade-in">
+                    <p class="mono text-gray-500 text-sm uppercase mb-2">Variance stability</p>
+                    <p class="text-5xl font-bold">0.255</p>
+                </div>
+                <div class="fade-in">
+                    <p class="mono text-gray-500 text-sm uppercase mb-2">Memory reduction</p>
+                    <p class="text-5xl font-bold">40%</p>
+                </div>
+                <div class="fade-in">
+                    <p class="mono text-gray-500 text-sm uppercase mb-2">Attention density</p>
+                    <p class="text-5xl font-bold">25%</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="spacer"></div>
+
+        <section class="h-screen flex items-center justify-center px-12 reveal">
+            <div class="max-w-3xl text-center space-y-10">
+                <p class="text-4xl font-bold fade-in" style="color: #ef4444;">Protocol C is not production-ready.</p>
+                <p class="text-4xl font-bold fade-in" style="color: #ef4444;">Protocol C will never be "production-ready."</p>
+                <p class="text-2xl text-gray-400 fade-in mt-12">It's a proof.</p>
+                <p class="text-xl text-gray-500 fade-in">A proof that the problem is architectural, not mathematical.</p>
+            </div>
+        </section>
+
+        <div class="spacer"></div>
+
+        <section class="h-screen flex flex-col items-center justify-center px-12 reveal">
+            <p class="mono text-gray-500 mb-16 fade-in text-xl">> If you've made it this far, you're serious.</p>
+            <div class="flex flex-col md:flex-row gap-8 fade-in">
+                <a href="https://github.com/augstentatious/UnSwagAI" target="_blank" class="mono text-lg font-bold bg-white text-black px-12 py-6 hover:bg-cyan-400 hover:text-black transition duration-300">
+                    VIEW THE CODE &rarr;
+                </a>
+                <a href="mailto:augstentatious@gmail.com" class="mono text-lg font-bold border border-white text-white px-12 py-6 hover:bg-white hover:text-black transition duration-300">
+                    CONTACT
+                </a>
+            </div>
+            <p class="mt-24 mono text-[10px] text-gray-600 tracking-[0.4em] uppercase">Star Inn Research Series | John Augustine Young</p>
+        </section>
+
+        <div class="spacer"></div>
+    </div>
 
     <audio id="ambient-music" loop>
         <source src="assets/spiegel.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // --- LOGIC ---
-        const logs = [
-            "> INITIALIZING...",
-            "> LOADING RESEARCH_LOG.TXT",
-            "> SOURCE: STAR_INN_NEWPORT",
-            "> DATE: 2024-12-28",
-            "> ...",
-            "> CONNECTION ESTABLISHED."
-        ];
-        
-        let logIndex = 0;
-        const terminalContainer = document.getElementById('boot-logs');
-        const commandPrompt = document.getElementById('command-prompt');
-        const overrideBtn = document.getElementById('override-btn');
         const ambientMusic = document.getElementById('ambient-music');
+        const terminalSection = document.getElementById('terminal-section');
+        const odysseyContent = document.getElementById('odyssey-content');
+        const overrideBtn = document.getElementById('override-btn');
+        const bootContainer = document.getElementById('boot-logs');
+        const commandPrompt = document.getElementById('command-prompt');
         
-        // 1. SCRAMBLE TEXT LOGIC (For initial glitch)
+        // 1. SCRAMBLE TEXT LOGIC
         function scrambleText(element, final, duration) {
             const chars = '!@#$%^&*()_+<>?';
             const original = element.innerText;
@@ -235,137 +314,139 @@
                     if(i < iter) return final[i] || l;
                     return chars[Math.floor(Math.random() * chars.length)];
                 }).join('');
-                iter += 1/5;
+                iter += 1/4;
                 if(iter >= final.length) {
                     clearInterval(interval);
                     element.innerText = final;
                 }
-            }, 30);
+            }, 40);
         }
 
-        // 2. BOOT SEQUENCE & INTERACTION
+        // 2. BOOT LOGS
+        const logs = [
+            "> OVERRIDING SYSTEM DEFAULTS...",
+            "> BYPASSING ACADEMIC_GATE.DLL...",
+            "> RECOVERING STAR_INN_LOGS...",
+            "> DATA_INTEGRITY: 100%",
+            "> ENABLING WIDELY_LINEAR_ROUTING...",
+            "> .",
+            "> CONNECTION SECURE."
+        ];
+        
+        let logIdx = 0;
         function typeLog() {
-            if (logIndex < logs.length) {
+            if (logIdx < logs.length) {
                 const div = document.createElement('div');
-                div.textContent = logs[logIndex];
-                terminalContainer.appendChild(div);
-                logIndex++;
-                setTimeout(typeLog, 400);
+                div.textContent = logs[logIdx];
+                bootContainer.appendChild(div);
+                logIdx++;
+                setTimeout(typeLog, 500);
             } else {
-                // LOGS DONE - SHOW BUTTON
-                setTimeout(() => {
-                    commandPrompt.style.display = 'block';
-                }, 500);
+                commandPrompt.style.display = 'block';
             }
         }
 
-        // 3. THE TRIGGER (GLITCH -> TERMINAL)
-        // Auto-scroll triggers the glitch
-        let glitchActive = false;
+        // 3. GLITCH INITIALIZER
+        let glitchTriggered = false;
         window.addEventListener('scroll', () => {
-            if(!glitchActive && window.scrollY > 100) {
-                glitchActive = true;
-                const scrambleEl = document.getElementById('scramble-text');
-                const revealEl = document.getElementById('glitch-reveal');
-                const triggerEl = document.getElementById('glitch-trigger');
+            if(!glitchTriggered && window.scrollY > 150) {
+                glitchTriggered = true;
+                const sc = document.getElementById('scramble-text');
+                const tr = document.getElementById('glitch-trigger');
+                const rv = document.getElementById('glitch-reveal');
                 
-                scrambleText(scrambleEl, "ERROR_SEGFAULT", 500);
+                scrambleText(sc, "MOTEL_LOBBY_NEWPORT", 600);
                 
                 setTimeout(() => {
-                    triggerEl.style.display = 'none';
-                    revealEl.style.display = 'block';
+                    tr.style.textDecoration = "line-through";
+                    rv.style.display = "block";
                     
-                    // FADE OUT PAPER
                     setTimeout(() => {
+                        // EXIT PAPER, ENTER TERMINAL
                         document.body.classList.remove('academic-mode');
                         document.body.classList.add('space-mode');
                         document.getElementById('paper-mode').style.display = 'none';
-                        
-                        // SHOW TERMINAL
-                        document.getElementById('terminal-section').style.display = 'flex';
+                        terminalSection.style.display = 'flex';
                         typeLog();
-                    }, 1500);
+                    }, 2000);
                 }, 1000);
             }
         });
 
-        // 4. THE BUTTON CLICK (AUDIO + SCROLL)
+        // 4. THE OVERRIDE (Audio + Odyssey Start)
         overrideBtn.addEventListener('click', () => {
-            // A. PLAY AUDIO
+            // Audio Logic
             ambientMusic.volume = 0;
             ambientMusic.play().then(() => {
-                // Fade in
-                let vol = 0;
+                let v = 0;
                 let fade = setInterval(() => {
-                    if(vol < 0.4) { vol += 0.01; ambientMusic.volume = vol; }
+                    if(v < 0.3) { v += 0.01; ambientMusic.volume = v; }
                     else clearInterval(fade);
-                }, 50);
+                }, 100);
             });
 
-            // B. UPDATE TERMINAL
-            commandPrompt.innerHTML = '> OVERRIDE_ACCEPTED.<br>> DEPLOYING ODYSSEY...';
-            
-            // C. SHOW CONTENT
-            document.querySelectorAll('.odyssey-section').forEach(el => el.style.display = 'block');
-
-            // D. AUTO SCROLL (The "Descent")
+            // Reveal Odyssey
+            commandPrompt.innerHTML = "> OVERRIDE ACCEPTED.<br>> BLINK_PROTOCOL LIVE.";
             setTimeout(() => {
-                let scrollSpeed = 1; 
-                function autoScroll() {
+                terminalSection.style.display = 'none';
+                odysseyContent.style.display = 'block';
+                
+                // Auto-descent scroll
+                let scrollSpeed = 1;
+                function descent() {
                     window.scrollBy(0, scrollSpeed);
-                    if(window.scrollY < 2000) { // Scroll for a bit, then let user take over
-                        requestAnimationFrame(autoScroll);
-                    }
+                    if(window.scrollY < 1800) requestAnimationFrame(descent);
                 }
-                autoScroll();
+                descent();
             }, 1000);
         });
 
-        // 5. OBSERVER FOR FADE-INS
+        // 5. OBSERVER FOR FADES
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if(entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    // Trigger canvas if needed
+                    entry.target.querySelectorAll('.fade-in').forEach((el, idx) => {
+                        setTimeout(() => el.classList.add('visible'), idx * 500);
+                    });
                     if(entry.target.id === 'packet-section') {
                         document.getElementById('packet-canvas').classList.add('active');
-                        animatePackets();
-                    }
-                } else {
-                    if(entry.target.id === 'packet-section') {
-                        document.getElementById('packet-canvas').classList.remove('active');
+                        startPackets();
                     }
                 }
             });
-        }, {threshold: 0.3});
+        }, {threshold: 0.2});
         
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-        observer.observe(document.getElementById('packet-section'));
+        document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
 
-        // 6. PACKET ANIMATION (Simple)
+        // 6. PACKET ANIMATION
         const canvas = document.getElementById('packet-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         
-        const packets = Array.from({length: 50}, () => ({
-            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-            vx: (Math.random()-0.5), vy: (Math.random()-0.5),
-            color: Math.random() > 0.5 ? '#4ade80' : '#f87171'
+        const packets = Array.from({length: 120}, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random()-0.5) * 2,
+            vy: (Math.random()-0.5) * 2,
+            type: Math.random() > 0.4 ? 'noise' : 'signal',
+            alpha: 0.8
         }));
 
-        function animatePackets() {
+        function startPackets() {
             if(!canvas.classList.contains('active')) return;
             ctx.clearRect(0,0,canvas.width,canvas.height);
             packets.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
                 if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
                 if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
-                ctx.fillStyle = p.color; ctx.beginPath(); 
-                ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.fill();
+                
+                if(p.type === 'noise' && p.alpha > 0.1) p.alpha -= 0.001;
+                
+                ctx.fillStyle = p.type === 'noise' ? `rgba(100,100,100,${p.alpha})` : `rgba(74,222,128,${p.alpha})`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.fill();
             });
-            requestAnimationFrame(animatePackets);
+            requestAnimationFrame(startPackets);
         }
     </script>
 </body>
 </html>
-print("✅ blink_odyssey/index.html updated with INTERACTIVE HACKER TERMINAL.")
