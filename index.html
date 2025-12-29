@@ -21,7 +21,7 @@
         body.space-mode {
             background: 
                 linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                url('https://webbtelescope.org/files/live/sites/webb/files/home/webb-science/early-highlights/_images/STSCI-J-p23128a-4000px.jpg') no-repeat center center fixed;
+                url('/assets/jwst.png') no-repeat center center fixed;
             background-size: cover;
         }
         
@@ -188,7 +188,6 @@
 </head>
 <body class="academic-mode">
 
-    <!-- DECEPTIVE ACADEMIC OPENING -->
     <div id="paper-mode" class="paper-header">
         <h1 class="paper-title">Protocol C: A Study in Quantized Model Stability</h1>
         <p class="paper-author">John Augustine Young</p>
@@ -231,7 +230,6 @@
         </div>
     </div>
 
-    <!-- TERMINAL INTERRUPTION -->
     <section class="h-screen flex flex-col justify-center px-12 md:px-24 section-container odyssey-section" style="display: none;" id="terminal-section">
         <div id="terminal" class="mono">
             <div id="boot-logs"></div>
@@ -241,7 +239,6 @@
 
     <div class="deep-spacer odyssey-section" style="display: none;"></div>
 
-    <!-- The Revelation -->
     <section class="h-screen flex items-center justify-center px-6 reveal section-container odyssey-section">
         <h1 class="text-4xl md:text-7xl font-bold tracking-tighter text-center fade-in" style="line-height: 1.2;">
             This was built in a<br>motel lobby.
@@ -250,7 +247,6 @@
 
     <div class="spacer odyssey-section"></div>
 
-    <!-- The Negation -->
     <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
         <div class="max-w-2xl space-y-12">
             <p class="text-2xl md:text-4xl text-gray-400 fade-in">Not a university lab.</p>
@@ -261,7 +257,6 @@
 
     <div class="spacer odyssey-section"></div>
 
-    <!-- The Location -->
     <section class="h-screen flex flex-col items-center justify-center reveal section-container odyssey-section">
         <h2 class="text-3xl md:text-5xl font-light italic text-gray-500 fade-in mb-8">A motel.</h2>
         <h2 class="text-3xl md:text-5xl font-light italic text-gray-500 fade-in mb-8">In Newport Beach.</h2>
@@ -270,7 +265,6 @@
 
     <div class="deep-spacer odyssey-section"></div>
 
-    <!-- The Question -->
     <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
         <p class="text-3xl md:text-5xl font-bold mb-6 fade-in max-w-3xl">Why do 2-bit models collapse?</p>
         <p class="text-xl md:text-2xl text-gray-500 max-w-2xl fade-in">Four nights. One checkout deadline. Zero fallback options.</p>
@@ -278,7 +272,6 @@
 
     <div class="spacer odyssey-section"></div>
 
-    <!-- Packet Animation Section -->
     <section id="packet-section" class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
         <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// PACKET-SWITCHED ATTENTION</h3>
         <p class="text-2xl md:text-3xl font-bold mb-6 fade-in">Standard attention processes everything.</p>
@@ -295,7 +288,6 @@
 
     <div class="spacer odyssey-section"></div>
 
-    <!-- The Math -->
     <section class="h-screen flex flex-col justify-center items-center px-12 reveal section-container odyssey-section">
         <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-12 mono fade-in">// THE SOLUTION</h3>
         <div class="math fade-in">
@@ -309,7 +301,6 @@
 
     <div class="spacer odyssey-section"></div>
 
-    <!-- The Confession -->
     <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
         <div class="max-w-2xl space-y-8 mono text-lg">
             <p class="fade-in" style="color: #888;">> You're probably wondering about the methodology.</p>
@@ -333,7 +324,6 @@
 
     <div class="deep-spacer odyssey-section"></div>
 
-    <!-- The Results -->
     <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
         <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// PERFORMANCE</h3>
         <div class="space-y-6 max-w-2xl">
@@ -358,7 +348,6 @@
 
     <div class="spacer odyssey-section"></div>
 
-    <!-- The Warning -->
     <section class="h-screen flex items-center justify-center px-12 reveal section-container odyssey-section">
         <div class="max-w-2xl text-center space-y-8">
             <p class="text-3xl font-bold fade-in" style="color: #ef4444;">Protocol C is not production-ready.</p>
@@ -371,7 +360,6 @@
 
     <div class="spacer odyssey-section"></div>
 
-    <!-- The Call to Action -->
     <section class="h-screen flex flex-col items-center justify-center px-12 reveal section-container odyssey-section">
         <p class="mono text-gray-400 mb-12 fade-in">> If you've made it this far, you're serious.</p>
         <div class="flex flex-col md:flex-row gap-6 fade-in">
@@ -386,12 +374,38 @@
 
     <div class="spacer odyssey-section"></div>
 
-    <!-- Hidden Audio -->
     <audio id="ambient-music" loop>
         <source src="assets/spiegel.mp3" type="audio/mpeg">
     </audio>
 
     <script>
+        // --- 1. THE STEALTH AUDIO UNLOCK LOGIC ---
+        const ambientMusic = document.getElementById('ambient-music');
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            
+            // Play and immediately pause to "warm up" the audio context
+            ambientMusic.play().then(() => {
+                ambientMusic.pause();
+                audioUnlocked = true;
+                console.log("🌌 Audio Unlocked via User Gesture");
+            }).catch(e => console.log("Audio still blocked (needs interaction):", e));
+            
+            // Cleanup listeners
+            document.removeEventListener('click', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+            document.removeEventListener('keydown', unlockAudio);
+        }
+
+        // Listen for the first interaction anywhere on the document
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
+        document.addEventListener('keydown', unlockAudio);
+
+
+        // --- 2. GLITCH AND STORY LOGIC ---
         let glitchTriggered = false;
         let scrollStartTime = null;
         let hasScrolled = false;
@@ -448,26 +462,27 @@
                 if (glitchReveal) glitchReveal.style.display = 'block';
             }, 2000);
             
+            // --- THE GLITCH TRIGGER AUDIO FADE ---
             setTimeout(() => {
                 const interruptText = document.getElementById('interrupt-text');
                 if (interruptText) interruptText.style.display = 'block';
                 
-                // START MUSIC HERE - fade in during glitch
-                const ambientMusic = document.getElementById('ambient-music');
                 if (ambientMusic) {
                     ambientMusic.volume = 0;
-                    ambientMusic.play().catch(e => console.log('Audio blocked:', e));
-                    
-                    // Fade in over 3 seconds
-                    let vol = 0;
-                    const fadeIn = setInterval(() => {
-                        if (vol < 0.2) {
-                            vol += 0.005;
-                            ambientMusic.volume = vol;
-                        } else {
-                            clearInterval(fadeIn);
-                        }
-                    }, 100);
+                    // Try to play (will work if unlocked earlier)
+                    ambientMusic.play().then(() => {
+                        let vol = 0;
+                        const fadeIn = setInterval(() => {
+                            if (vol < 0.2) {
+                                vol += 0.002; 
+                                ambientMusic.volume = vol;
+                            } else {
+                                clearInterval(fadeIn);
+                            }
+                        }, 50);
+                    }).catch(e => {
+                        console.log('Audio playback failed at glitch. (User did not interact?)', e);
+                    });
                 }
             }, 3500);
             
@@ -625,7 +640,8 @@
 
         const packetObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {animationActive = true;
+                if (entry.isIntersecting) {
+                    animationActive = true;
                     canvas.classList.add('active');
                     animate();
                 } else {
