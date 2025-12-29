@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protocol C: A Study in Quantized Model Stability</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Inter:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Inter:wght@300;400;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -21,225 +21,127 @@
         body.space-mode {
             background: 
                 linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                url('/assets/jwst.png') no-repeat center center fixed;
+                url('assets/jwst.png') no-repeat center center fixed;
             background-size: cover;
         }
-        
-        /* Fallback starfield */
+
+        /* Starfield Fallback */
         body::after {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.15), transparent),
-                radial-gradient(2px 2px at 60% 70%, rgba(255,255,255,0.1), transparent),
-                radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.2), transparent),
-                radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.15), transparent),
-                radial-gradient(2px 2px at 90% 60%, rgba(255,255,255,0.1), transparent),
-                radial-gradient(1px 1px at 15% 90%, rgba(255,255,255,0.2), transparent),
-                radial-gradient(2px 2px at 35% 20%, rgba(255,255,255,0.1), transparent),
-                radial-gradient(1px 1px at 25% 80%, rgba(255,255,255,0.2), transparent),
-                radial-gradient(2px 2px at 70% 40%, rgba(255,255,255,0.1), transparent);
-            pointer-events: none;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(white 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.1;
             z-index: 0;
-            opacity: 0.5;
+            pointer-events: none;
         }
         
         .mono { font-family: 'JetBrains Mono', monospace; }
         
         /* Deceptive Academic Opening */
-        .academic-mode {
-            background: #fff;
-            color: #000;
-        }
-        
-        .academic-mode::after {
-            display: none;
-        }
+        .academic-mode { background: #fff; color: #000; }
+        .academic-mode::after { display: none; }
         
         .academic-mode .paper-header {
-            max-width: 650px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
+            max-width: 650px; margin: 0 auto; padding: 4rem 2rem;
             font-family: 'Times New Roman', serif;
         }
         
-        .paper-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
+        .paper-title { font-size: 1.5rem; font-weight: bold; text-align: center; margin-bottom: 1rem; }
+        .paper-author { text-align: center; font-size: 1rem; margin-bottom: 2rem; }
+        .paper-abstract { font-size: 0.95rem; line-height: 1.6; text-align: justify; }
         
-        .paper-author {
-            text-align: center;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .paper-date {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 2rem;
-        }
-        
-        .paper-abstract {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            text-align: justify;
-        }
-        
-        .paper-abstract strong {
-            font-weight: bold;
-        }
-        
-        /* Glitch Effect */
-        .scramble {
-            display: inline-block;
-            animation: scramble 0.1s infinite;
-        }
-        
+        /* Glitch Styles */
+        .scramble { display: inline-block; animation: scramble 0.1s infinite; }
         @keyframes scramble {
             0% { transform: translate(0, 0); }
-            20% { transform: translate(-1px, 1px); }
-            40% { transform: translate(1px, -1px); }
-            60% { transform: translate(-1px, -1px); }
-            80% { transform: translate(1px, 1px); }
+            25% { transform: translate(-2px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, 2px); }
             100% { transform: translate(0, 0); }
         }
         
-        /* 17776 Style */
+        /* 17776 Layout */
         .spacer { height: 100vh; }
         .deep-spacer { height: 200vh; }
         
         .fade-in { opacity: 0; transition: opacity 2s ease-in-out; }
         .visible { opacity: 1; }
         
-        #terminal { 
-            font-size: 14px; 
-            line-height: 1.8; 
-            color: #0f0; 
-            max-width: 800px;
-            display: none;
-        }
-        
-        #terminal.active { display: block; }
-        
-        .cursor { 
-            display: inline-block; 
-            width: 10px; 
-            height: 18px; 
-            background: #0f0; 
-            animation: blink 1s infinite; 
-            margin-left: 2px;
-        }
-        
-        @keyframes blink { 
-            0%, 49% { opacity: 1; } 
-            50%, 100% { opacity: 0; } 
-        }
-
-        /* Packet Animation Canvas */
-        #packet-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-        
-        #packet-canvas.active {
-            opacity: 1;
-        }
-
-        .section-container {
+        /* TERMINAL STYLES */
+        #terminal-section {
             position: relative;
-            z-index: 20;
+            z-index: 50;
+            display: none; /* Hidden until glitch activates it */
+        }
+
+        #terminal { 
+            font-size: 14px; line-height: 1.8; color: #0f0; 
+            max-width: 800px; margin: 0 auto;
         }
         
-        .odyssey-section {
-            display: none;
+        .terminal-btn {
+            background: none; border: none;
+            color: #0f0; font-family: 'JetBrains Mono', monospace;
+            font-size: 14px; font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
+            animation: blink 1s infinite;
         }
+        .terminal-btn:hover { background: #0f0; color: #000; text-decoration: none; }
 
-        /* Math Display */
-        .math {
-            font-size: 2rem;
-            font-weight: 300;
-            font-family: 'JetBrains Mono', monospace;
-            color: #fff;
-            text-align: center;
-            padding: 2rem;
+        .cursor { 
+            display: inline-block; width: 8px; height: 16px; 
+            background: #0f0; animation: blink 1s infinite; vertical-align: middle;
         }
+        @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
-        .math-sub {
-            font-size: 1rem;
-            color: #888;
-            margin-top: 1rem;
+        /* Packet Canvas */
+        #packet-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 10; opacity: 0; transition: opacity 1s ease;
         }
+        #packet-canvas.active { opacity: 1; }
+
+        .odyssey-section { display: none; }
+        .reveal { position: relative; z-index: 20; }
+        
+        .math { font-size: 2rem; font-weight: 300; font-family: 'JetBrains Mono', monospace; text-align: center; }
     </style>
 </head>
 <body class="academic-mode">
 
     <div id="paper-mode" class="paper-header">
         <h1 class="paper-title">Protocol C: A Study in Quantized Model Stability</h1>
-        <p class="paper-author">John Augustine Young</p>
-        <p class="paper-date">December 2024</p>
+        <p class="paper-author">John Augustine Young &nbsp;|&nbsp; December 2024</p>
         
         <div class="paper-abstract">
-            <p style="margin-bottom: 1rem;"><strong>Abstract:</strong> This paper presents a novel approach to addressing numerical instability in heavily quantized mixture-of-experts architectures. Through the implementation of packet-switched attention routing and variance-aware gating mechanisms, we demonstrate significant improvements in model stability under 2-bit weight quantization constraints.</p>
-            
-            <p style="margin-bottom: 1rem;">Standard approaches to model quantization suffer from accumulated numerical errors and correlation instabilities that manifest as catastrophic degradation in inference quality. Our work introduces three core innovations: (1) dynamic variance monitoring through what we term the "Armen Guard" mechanism, (2) a local syntactic stabilization layer, and (3) recursive residual quantization for progressive error correction.</p>
+            <p style="margin-bottom: 1rem;"><strong>Abstract:</strong> This paper presents a novel approach to addressing numerical instability in heavily quantized mixture-of-experts architectures. Through the implementation of packet-switched attention routing...</p>
             
             <p style="margin-bottom: 2rem;"><strong>1. Introduction</strong></p>
+            <p style="margin-bottom: 1rem;">The deployment of large language models in resource-constrained environments has become increasingly critical...</p>
             
-            <p style="margin-bottom: 1rem;">The deployment of large language models in resource-constrained environments has become increasingly critical as computational demands continue to scale exponentially. Quantization represents a promising avenue for reducing memory footprint and inference latency, yet aggressive bit-width reduction—particularly to 2-bit representations—introduces fundamental challenges in maintaining numerical stability and model fidelity.</p>
-            
-            <p style="margin-bottom: 1rem;">Previous work in quantization has primarily focused on post-training quantization techniques and quantization-aware training methodologies. While these approaches have achieved success in 8-bit and 4-bit regimes, they encounter severe degradation when extended to 2-bit weight representations. The core issue manifests as a correlation blow-up phenomenon, where similar input patterns create unstable routing distributions in the quantized parameter space.</p>
-            
-            <p style="margin-bottom: 1rem;">Our contribution addresses this fundamental limitation through architectural innovation rather than optimization refinement. We hypothesize that the instability problem is not inherent to quantization itself, but rather emerges from the assumption of uniform attention density across all tokens in the sequence.</p>
-            
-            <p style="margin-bottom: 2rem;"><strong>2. Methodology</strong></p>
-            
-            <p style="margin-bottom: 1rem;">We introduce Protocol C, a packet-switched attention mechanism that discretizes token processing into four routing categories based on semantic density and syntactic structure. This approach allows the model to allocate computational resources adaptively, processing high-confidence noise with minimal overhead while preserving full-precision attention for semantically dense regions.</p>
-            
-            <p style="margin-bottom: 1rem;">The system employs a differentiable gating mechanism trained end-to-end with Gumbel-Softmax relaxation, enabling gradient flow through discrete routing decisions. Each token is assigned to one of four packet types: NULL (00), LOCAL TETHER (01), GLOBAL ANCHOR (10), or GLOBAL SIGNAL (11), corresponding to different computational pathways optimized for specific linguistic patterns.</p>
-            
-            <p style="margin-bottom: 1rem;">Formally, we define the routing function as:</p>
-            
-            <p style="margin-bottom: 1rem; text-align: center; font-family: 'Times New Roman', serif; font-style: italic;">
-                R(h<sub>t</sub>) = argmax<sub>k∈{00,01,10,11}</sub> Softmax(W<sub>gate</sub>h<sub>t</sub> + b<sub>gate</sub>)<sub>k</sub>
-            </p>
-            
-            <p style="margin-bottom: 1rem;">where h<sub>t</sub> represents the hidden state at position t. The variance monitoring mechanism applies a dynamic correction when σ<sup>2</sup>(h<sub>t</sub>) > 0.85, preventing the correlation blow-up phenomenon observed in standard quantized architectures.</p>
-            
-            <p style="margin-bottom: 2rem;"><strong>3. Experimental Setup</strong></p>
-            
+            <p style="margin-bottom: 2rem;"><strong>2. Experimental Setup</strong></p>
             <p id="glitch-trigger" style="margin-bottom: 1rem;">The research was conducted over a four-day period at <span id="scramble-text">a university research facility</span></p>
             
-            <p style="margin-bottom: 1rem; display: none;" id="glitch-reveal">The research was conducted over a four-day period at <span style="text-decoration: line-through;">a university research facility</span> <span style="color: #f00;">a motel in Newport Beach</span></p>
-            
-            <p style="margin-bottom: 1rem; font-style: italic; color: #666; display: none;" id="interrupt-text">> Wait. This isn't a paper.</p>
+            <p style="margin-bottom: 1rem; display: none; color: #f00; font-family: 'JetBrains Mono';" id="glitch-reveal">ERROR: LOCATION_MISMATCH > STAR_INN</p>
         </div>
     </div>
 
-    <section class="h-screen flex flex-col justify-center px-12 md:px-24 section-container odyssey-section" style="display: none;" id="terminal-section">
+    <section id="terminal-section" class="h-screen flex flex-col justify-center px-6">
         <div id="terminal" class="mono">
             <div id="boot-logs"></div>
-            <span class="cursor"></span>
+            <div id="command-prompt" style="display:none; margin-top: 20px;">
+                > SYSTEM_LOCK DETECTED.<br>
+                > MANUAL OVERRIDE REQUIRED: <button id="override-btn" class="terminal-btn">[ EXECUTE_PROTOCOL_C ]</button>
+            </div>
         </div>
     </section>
 
-    <div class="deep-spacer odyssey-section" style="display: none;"></div>
+    <div class="deep-spacer odyssey-section"></div>
 
-    <section class="h-screen flex items-center justify-center px-6 reveal section-container odyssey-section">
+    <section class="h-screen flex items-center justify-center px-6 reveal odyssey-section">
         <h1 class="text-4xl md:text-7xl font-bold tracking-tighter text-center fade-in" style="line-height: 1.2;">
             This was built in a<br>motel lobby.
         </h1>
@@ -247,414 +149,223 @@
 
     <div class="spacer odyssey-section"></div>
 
-    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
+    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal odyssey-section">
         <div class="max-w-2xl space-y-12">
-            <p class="text-2xl md:text-4xl text-gray-400 fade-in">Not a university lab.</p>
-            <p class="text-2xl md:text-4xl text-gray-400 fade-in">Not a tech company.</p>
-            <p class="text-2xl md:text-4xl text-gray-400 fade-in">Not even a coffee shop with good WiFi.</p>
+            <p class="text-3xl text-gray-400 fade-in">Not a university lab.</p>
+            <p class="text-3xl text-gray-400 fade-in">Not a tech company.</p>
+            <p class="text-3xl text-gray-400 fade-in">Not even a coffee shop.</p>
         </div>
     </section>
 
     <div class="spacer odyssey-section"></div>
 
-    <section class="h-screen flex flex-col items-center justify-center reveal section-container odyssey-section">
-        <h2 class="text-3xl md:text-5xl font-light italic text-gray-500 fade-in mb-8">A motel.</h2>
-        <h2 class="text-3xl md:text-5xl font-light italic text-gray-500 fade-in mb-8">In Newport Beach.</h2>
-        <p class="text-xl text-gray-600 fade-in mono">Star Inn. December 24-28, 2024.</p>
+    <section class="h-screen flex flex-col items-center justify-center reveal odyssey-section">
+        <h2 class="text-3xl md:text-5xl font-light italic text-gray-500 fade-in mb-8">Star Inn.</h2>
+        <h2 class="text-2xl md:text-4xl font-light italic text-gray-500 fade-in mb-8">Newport Beach, CA.</h2>
+        <p class="text-xl text-gray-600 fade-in mono">Dec 24-28, 2024</p>
     </section>
 
     <div class="deep-spacer odyssey-section"></div>
 
-    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
-        <p class="text-3xl md:text-5xl font-bold mb-6 fade-in max-w-3xl">Why do 2-bit models collapse?</p>
-        <p class="text-xl md:text-2xl text-gray-500 max-w-2xl fade-in">Four nights. One checkout deadline. Zero fallback options.</p>
+    <section class="h-screen flex flex-col justify-center px-12 reveal odyssey-section">
+        <p class="text-3xl md:text-5xl font-bold mb-6 fade-in">Why do 2-bit models collapse?</p>
+        <p class="text-xl text-gray-500 fade-in">Four nights. One deadline. Zero fallback.</p>
     </section>
 
     <div class="spacer odyssey-section"></div>
 
-    <section id="packet-section" class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
+    <section id="packet-section" class="h-screen flex flex-col justify-center px-12 reveal odyssey-section">
         <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// PACKET-SWITCHED ATTENTION</h3>
-        <p class="text-2xl md:text-3xl font-bold mb-6 fade-in">Standard attention processes everything.</p>
-        <p class="text-2xl md:text-3xl text-gray-500 mb-12 fade-in">Protocol C ignores 40% of it.</p>
-        <div class="mono text-sm text-gray-400 space-y-2 fade-in">
-            <p><span style="color: #666;">00 | NULL</span> → High-confidence noise. Pruned entirely.</p>
-            <p><span style="color: #4ade80;">01 | LOCAL TETHER</span> → Syntax. CNN path. O(N).</p>
-            <p><span style="color: #60a5fa;">10 | GLOBAL ANCHOR</span> → Summary register. O(1).</p>
-            <p><span style="color: #f87171;">11 | GLOBAL SIGNAL</span> → Sparse attention. ~25%.</p>
+        <p class="text-2xl font-bold mb-6 fade-in">Protocol C ignores 40% of the noise.</p>
+        <div class="mono text-sm text-gray-400 space-y-4 fade-in">
+            <p><span style="color: #666;">00 | NULL</span> → Pruned.</p>
+            <p><span style="color: #4ade80;">01 | TETHER</span> → Syntax (CNN).</p>
+            <p><span style="color: #60a5fa;">10 | ANCHOR</span> → Summary.</p>
+            <p><span style="color: #f87171;">11 | SIGNAL</span> → Attention.</p>
         </div>
     </section>
-
     <canvas id="packet-canvas"></canvas>
 
     <div class="spacer odyssey-section"></div>
 
-    <section class="h-screen flex flex-col justify-center items-center px-12 reveal section-container odyssey-section">
+    <section class="h-screen flex flex-col justify-center items-center px-12 reveal odyssey-section">
         <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-12 mono fade-in">// THE SOLUTION</h3>
-        <div class="math fade-in">
-            h<sub>out</sub> = Ux + W*x<sub>conj</sub>
-        </div>
-        <p class="math-sub fade-in max-w-2xl text-center">
-            Widely-Linear Isomorphism captures non-circular patterns<br>
-            that standard complex networks miss.
-        </p>
+        <div class="math fade-in">h<sub>out</sub> = Ux + W*x<sub>conj</sub></div>
+        <p class="text-center text-gray-500 mt-8 fade-in">Widely-Linear Isomorphism.</p>
     </section>
 
     <div class="spacer odyssey-section"></div>
 
-    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
-        <div class="max-w-2xl space-y-8 mono text-lg">
-            <p class="fade-in" style="color: #888;">> You're probably wondering about the methodology.</p>
-            <p class="fade-in text-gray-300">There was no lab. No grant. No compute cluster.</p>
-            <p class="fade-in text-gray-300">Just a Google Colab notebook and a checkout deadline.</p>
-            
-            <p class="fade-in" style="color: #888;">> The gas station attendant gave me free coffee.</p>
-            <p class="fade-in text-gray-300">Luis. Chocolate macadamia nut. Every morning.</p>
-            
-            <p class="fade-in" style="color: #888;">> My phone was stolen after midnight mass on Christmas Eve.</p>
-            <p class="fade-in text-gray-300">10 backup codes. Written down before it happened. In a Chanel bag.</p>
-            <p class="fade-in text-gray-300">The only reason I could still push to GitHub.</p>
-            
-            <p class="fade-in" style="color: #888;">> This is how research happens when you have no other choice.</p>
-            <p class="fade-in text-gray-300">You solve the problem.</p>
-            <p class="fade-in text-gray-300">And sometimes you still sleep outside.</p>
-            
-            <p class="fade-in font-bold text-white">I did both.</p>
+    <section class="h-screen flex flex-col items-center justify-center px-12 reveal odyssey-section">
+        <p class="mono text-gray-400 mb-12 fade-in">> MISSION STATUS: COMPLETE</p>
+        <div class="flex gap-6 fade-in">
+            <a href="https://github.com/augstentatious/UnSwagAI" class="mono text-sm font-bold bg-white text-black px-8 py-4 hover:bg-gray-200">GITHUB</a>
+            <a href="mailto:augstentatious@gmail.com" class="mono text-sm font-bold border border-white text-white px-8 py-4 hover:bg-white hover:text-black">CONTACT</a>
         </div>
     </section>
-
-    <div class="deep-spacer odyssey-section"></div>
-
-    <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
-        <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// PERFORMANCE</h3>
-        <div class="space-y-6 max-w-2xl">
-            <div class="fade-in">
-                <p class="mono text-gray-400 text-sm mb-2">Cold-start latency</p>
-                <p class="text-3xl font-bold">~360ms</p>
-            </div>
-            <div class="fade-in">
-                <p class="mono text-gray-400 text-sm mb-2">Variance stability (Armen Guard active)</p>
-                <p class="text-3xl font-bold">0.255</p>
-            </div>
-            <div class="fade-in">
-                <p class="mono text-gray-400 text-sm mb-2">Memory reduction (00 pruning)</p>
-                <p class="text-3xl font-bold">~40%</p>
-            </div>
-            <div class="fade-in">
-                <p class="mono text-gray-400 text-sm mb-2">Attention density</p>
-                <p class="text-3xl font-bold">25% <span class="text-lg text-gray-500">(vs 100% standard)</span></p>
-            </div>
-        </div>
-    </section>
-
-    <div class="spacer odyssey-section"></div>
-
-    <section class="h-screen flex items-center justify-center px-12 reveal section-container odyssey-section">
-        <div class="max-w-2xl text-center space-y-8">
-            <p class="text-3xl font-bold fade-in" style="color: #ef4444;">Protocol C is not production-ready.</p>
-            <p class="text-3xl font-bold fade-in" style="color: #ef4444;">Protocol C will never be "production-ready."</p>
-            <p class="text-2xl text-gray-400 fade-in mt-12">It's a proof.</p>
-            <p class="text-xl text-gray-500 fade-in">A proof that the problem is architectural, not mathematical.</p>
-            <p class="text-xl text-gray-500 fade-in">What you build with this proof is up to you.</p>
-        </div>
-    </section>
-
-    <div class="spacer odyssey-section"></div>
-
-    <section class="h-screen flex flex-col items-center justify-center px-12 reveal section-container odyssey-section">
-        <p class="mono text-gray-400 mb-12 fade-in">> If you've made it this far, you're serious.</p>
-        <div class="flex flex-col md:flex-row gap-6 fade-in">
-            <a href="https://github.com/augstentatious/UnSwagAI" target="_blank" class="mono text-sm font-bold bg-white text-black px-8 py-4 hover:bg-gray-200 transition text-center">
-                VIEW THE CODE →
-            </a>
-            <a href="mailto:augstentatious@gmail.com" class="mono text-sm font-bold border border-white text-white px-8 py-4 hover:bg-white hover:text-black transition text-center">
-                CONTACT
-            </a>
-        </div>
-    </section>
-
-    <div class="spacer odyssey-section"></div>
 
     <audio id="ambient-music" loop>
         <source src="assets/spiegel.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // --- 1. THE STEALTH AUDIO UNLOCK LOGIC ---
+        // --- LOGIC ---
+        const logs = [
+            "> INITIALIZING...",
+            "> LOADING RESEARCH_LOG.TXT",
+            "> SOURCE: STAR_INN_NEWPORT",
+            "> DATE: 2024-12-28",
+            "> ...",
+            "> CONNECTION ESTABLISHED."
+        ];
+        
+        let logIndex = 0;
+        const terminalContainer = document.getElementById('boot-logs');
+        const commandPrompt = document.getElementById('command-prompt');
+        const overrideBtn = document.getElementById('override-btn');
         const ambientMusic = document.getElementById('ambient-music');
-        let audioUnlocked = false;
-
-        function unlockAudio() {
-            if (audioUnlocked) return;
-            
-            // Play and immediately pause to "warm up" the audio context
-            ambientMusic.play().then(() => {
-                ambientMusic.pause();
-                audioUnlocked = true;
-                console.log("🌌 Audio Unlocked via User Gesture");
-            }).catch(e => console.log("Audio still blocked (needs interaction):", e));
-            
-            // Cleanup listeners
-            document.removeEventListener('click', unlockAudio);
-            document.removeEventListener('touchstart', unlockAudio);
-            document.removeEventListener('keydown', unlockAudio);
-        }
-
-        // Listen for the first interaction anywhere on the document
-        document.addEventListener('click', unlockAudio);
-        document.addEventListener('touchstart', unlockAudio);
-        document.addEventListener('keydown', unlockAudio);
-
-
-        // --- 2. GLITCH AND STORY LOGIC ---
-        let glitchTriggered = false;
-        let scrollStartTime = null;
-        let hasScrolled = false;
         
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        const triggerTime = isMobile ? 500 : 1500;
-        
-        function scrambleText(element, originalText, duration) {
-            const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
-            let iterations = 0;
-            const maxIterations = duration / 50;
-            
+        // 1. SCRAMBLE TEXT LOGIC (For initial glitch)
+        function scrambleText(element, final, duration) {
+            const chars = '!@#$%^&*()_+<>?';
+            const original = element.innerText;
+            let iter = 0;
             const interval = setInterval(() => {
-                element.textContent = originalText
-                    .split('')
-                    .map((char, index) => {
-                        if (char === ' ') return ' ';
-                        if (iterations > maxIterations * (index / originalText.length)) {
-                            return originalText[index];
-                        }
-                        return chars[Math.floor(Math.random() * chars.length)];
-                    })
-                    .join('');
-                
-                iterations++;
-                
-                if (iterations > maxIterations) {
+                element.innerText = original.split('').map((l, i) => {
+                    if(i < iter) return final[i] || l;
+                    return chars[Math.floor(Math.random() * chars.length)];
+                }).join('');
+                iter += 1/5;
+                if(iter >= final.length) {
                     clearInterval(interval);
-                    element.textContent = originalText;
+                    element.innerText = final;
                 }
-            }, 50);
+            }, 30);
         }
-        
-        function triggerGlitchSequence() {
-            if (glitchTriggered) return;
-            glitchTriggered = true;
-            
-            const scrambleElement = document.getElementById('scramble-text');
-            const glitchTrigger = document.getElementById('glitch-trigger');
-            
-            if (scrambleElement) {
-                scrambleElement.classList.add('scramble');
-                scrambleText(scrambleElement, 'a university research facility', 800);
-                
+
+        // 2. BOOT SEQUENCE & INTERACTION
+        function typeLog() {
+            if (logIndex < logs.length) {
+                const div = document.createElement('div');
+                div.textContent = logs[logIndex];
+                terminalContainer.appendChild(div);
+                logIndex++;
+                setTimeout(typeLog, 400);
+            } else {
+                // LOGS DONE - SHOW BUTTON
                 setTimeout(() => {
-                    scrambleElement.classList.remove('scramble');
-                    scrambleText(scrambleElement, '████████████████████████████', 500);
-                }, 1000);
+                    commandPrompt.style.display = 'block';
+                }, 500);
             }
-            
-            setTimeout(() => {
-                if (glitchTrigger) glitchTrigger.style.display = 'none';
-                const glitchReveal = document.getElementById('glitch-reveal');
-                if (glitchReveal) glitchReveal.style.display = 'block';
-            }, 2000);
-            
-            // --- THE GLITCH TRIGGER AUDIO FADE ---
-            setTimeout(() => {
-                const interruptText = document.getElementById('interrupt-text');
-                if (interruptText) interruptText.style.display = 'block';
-                
-                if (ambientMusic) {
-                    ambientMusic.volume = 0;
-                    // Try to play (will work if unlocked earlier)
-                    ambientMusic.play().then(() => {
-                        let vol = 0;
-                        const fadeIn = setInterval(() => {
-                            if (vol < 0.2) {
-                                vol += 0.002; 
-                                ambientMusic.volume = vol;
-                            } else {
-                                clearInterval(fadeIn);
-                            }
-                        }, 50);
-                    }).catch(e => {
-                        console.log('Audio playback failed at glitch. (User did not interact?)', e);
-                    });
-                }
-            }, 3500);
-            
-            setTimeout(() => {
-                document.body.classList.remove('academic-mode');
-                document.body.classList.add('space-mode');
-                const paperMode = document.getElementById('paper-mode');
-                if (paperMode) {
-                    paperMode.style.transition = 'opacity 1s ease';
-                    paperMode.style.opacity = '0';
-                }
-                
-                setTimeout(() => {
-                    if (paperMode) paperMode.style.display = 'none';
-                    
-                    const terminalSection = document.getElementById('terminal-section');
-                    const terminal = document.getElementById('terminal');
-                    if (terminalSection) terminalSection.style.display = 'block';
-                    if (terminal) terminal.classList.add('active');
-                    typeLog();
-                    
-                    setTimeout(() => {
-                        document.querySelectorAll('.odyssey-section').forEach(el => {
-                            el.style.display = 'block';
-                        });
-                    }, 4000);
-                }, 1000);
-            }, 5000);
         }
-        
+
+        // 3. THE TRIGGER (GLITCH -> TERMINAL)
+        // Auto-scroll triggers the glitch
+        let glitchActive = false;
         window.addEventListener('scroll', () => {
-            if (glitchTriggered) return;
-            
-            if (!hasScrolled) {
-                hasScrolled = true;
-                scrollStartTime = Date.now();
-            }
-            
-            const scrolledTime = Date.now() - scrollStartTime;
-            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            
-            if (scrolledTime > triggerTime || scrollPercent > 0.2) {
-                triggerGlitchSequence();
+            if(!glitchActive && window.scrollY > 100) {
+                glitchActive = true;
+                const scrambleEl = document.getElementById('scramble-text');
+                const revealEl = document.getElementById('glitch-reveal');
+                const triggerEl = document.getElementById('glitch-trigger');
+                
+                scrambleText(scrambleEl, "ERROR_SEGFAULT", 500);
+                
+                setTimeout(() => {
+                    triggerEl.style.display = 'none';
+                    revealEl.style.display = 'block';
+                    
+                    // FADE OUT PAPER
+                    setTimeout(() => {
+                        document.body.classList.remove('academic-mode');
+                        document.body.classList.add('space-mode');
+                        document.getElementById('paper-mode').style.display = 'none';
+                        
+                        // SHOW TERMINAL
+                        document.getElementById('terminal-section').style.display = 'flex';
+                        typeLog();
+                    }, 1500);
+                }, 1000);
             }
         });
 
-        const logs = [
-            "> System override detected...",
-            "> Establishing secure channel...",
-            "> Loading research_log.txt",
-            "> Source: Star_Inn_Newport_Beach",
-            "> Date: 2024-12-24 → 2024-12-28",
-            "",
-            "> Connection established."
-        ];
-        
-        let i = 0;
-        const container = document.getElementById('boot-logs');
-        
-        function typeLog() {
-            if (i < logs.length) {
-                const line = document.createElement('div');
-                line.textContent = logs[i];
-                if (container) container.appendChild(line);
-                i++;
-                setTimeout(typeLog, 600);
-            }
-        }
+        // 4. THE BUTTON CLICK (AUDIO + SCROLL)
+        overrideBtn.addEventListener('click', () => {
+            // A. PLAY AUDIO
+            ambientMusic.volume = 0;
+            ambientMusic.play().then(() => {
+                // Fade in
+                let vol = 0;
+                let fade = setInterval(() => {
+                    if(vol < 0.4) { vol += 0.01; ambientMusic.volume = vol; }
+                    else clearInterval(fade);
+                }, 50);
+            });
 
+            // B. UPDATE TERMINAL
+            commandPrompt.innerHTML = '> OVERRIDE_ACCEPTED.<br>> DEPLOYING ODYSSEY...';
+            
+            // C. SHOW CONTENT
+            document.querySelectorAll('.odyssey-section').forEach(el => el.style.display = 'block');
+
+            // D. AUTO SCROLL (The "Descent")
+            setTimeout(() => {
+                let scrollSpeed = 1; 
+                function autoScroll() {
+                    window.scrollBy(0, scrollSpeed);
+                    if(window.scrollY < 2000) { // Scroll for a bit, then let user take over
+                        requestAnimationFrame(autoScroll);
+                    }
+                }
+                autoScroll();
+            }, 1000);
+        });
+
+        // 5. OBSERVER FOR FADE-INS
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.querySelectorAll('.fade-in').forEach((el, index) => {
-                        setTimeout(() => el.classList.add('visible'), index * 400);
-                    });
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Trigger canvas if needed
+                    if(entry.target.id === 'packet-section') {
+                        document.getElementById('packet-canvas').classList.add('active');
+                        animatePackets();
+                    }
+                } else {
+                    if(entry.target.id === 'packet-section') {
+                        document.getElementById('packet-canvas').classList.remove('active');
+                    }
                 }
             });
-        }, { threshold: 0.3 });
+        }, {threshold: 0.3});
+        
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        observer.observe(document.getElementById('packet-section'));
 
-        document.querySelectorAll('.reveal').forEach(section => observer.observe(section));
-
+        // 6. PACKET ANIMATION (Simple)
         const canvas = document.getElementById('packet-canvas');
         const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        
+        const packets = Array.from({length: 50}, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            vx: (Math.random()-0.5), vy: (Math.random()-0.5),
+            color: Math.random() > 0.5 ? '#4ade80' : '#f87171'
+        }));
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        class Packet {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 2;
-                this.vy = (Math.random() - 0.5) * 2;
-                this.size = Math.random() * 3 + 2;
-                
-                const rand = Math.random();
-                if (rand < 0.40) {
-                    this.type = '00';
-                    this.color = 'rgba(100, 100, 100, 0.3)';
-                    this.fadeOut = true;
-                } else if (rand < 0.60) {
-                    this.type = '01';
-                    this.color = 'rgba(74, 222, 128, 0.6)';
-                    this.fadeOut = false;
-                } else if (rand < 0.75) {
-                    this.type = '10';
-                    this.color = 'rgba(96, 165, 250, 0.6)';
-                    this.fadeOut = false;
-                } else {
-                    this.type = '11';
-                    this.color = 'rgba(248, 113, 113, 0.6)';
-                    this.fadeOut = false;
-                }
-                
-                this.alpha = this.fadeOut ? 0.3 : 0.8;
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-
-                if (this.fadeOut && this.alpha > 0) {
-                    this.alpha -= 0.002;
-                }
-            }
-
-            draw() {
-                if (this.alpha <= 0) return;
-                ctx.fillStyle = this.color.replace(/[\d.]+\)$/, `${this.alpha})`);
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        const packets = Array.from({ length: 150 }, () => new Packet());
-        let animationActive = false;
-
-        function animate() {
-            if (!animationActive) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function animatePackets() {
+            if(!canvas.classList.contains('active')) return;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
             packets.forEach(p => {
-                p.update();
-                p.draw();
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.fillStyle = p.color; ctx.beginPath(); 
+                ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.fill();
             });
-            requestAnimationFrame(animate);
-        }
-
-        const packetObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animationActive = true;
-                    canvas.classList.add('active');
-                    animate();
-                } else {
-                    animationActive = false;
-                    canvas.classList.remove('active');
-                }
-            });
-        }, { threshold: 0.5 });
-
-        const packetSection = document.getElementById('packet-section');
-        if (packetSection) {
-            packetObserver.observe(packetSection);
+            requestAnimationFrame(animatePackets);
         }
     </script>
 </body>
 </html>
+print("✅ blink_odyssey/index.html updated with INTERACTIVE HACKER TERMINAL.")
