@@ -21,7 +21,7 @@
         body.space-mode {
             background: 
                 linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
-                radial-gradient(circle at center, #1a1a2e 0%, #000 100%);
+                url('assets/jwst.png') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -317,9 +317,7 @@
         <section class="h-screen flex flex-col justify-center items-center px-12 reveal">
             <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-12 mono fade-in">// SYSTEM ARCHITECTURE</h3>
             <div class="fade-in">
-                <div style="width: 600px; height: 400px; border: 2px solid rgba(15,255,15,0.5); display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5);">
-                    <p class="mono text-gray-500">[Architecture Diagram Placeholder]</p>
-                </div>
+                <img src="assets/flow_chart.png" alt="Protocol C Architecture" class="viz-image" style="max-width: 900px;">
                 <p class="mono text-sm text-gray-400 text-center mt-4 text-shadow">Energy-based surprise routing through 4 packet types</p>
             </div>
         </section>
@@ -351,15 +349,11 @@
             <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-12 mono fade-in">// EXPERIMENTAL VALIDATION</h3>
             <div class="viz-container fade-in">
                 <div>
-                    <div style="width: 600px; height: 300px; border: 2px solid rgba(15,255,15,0.5); display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5);">
-                        <p class="mono text-gray-500">[Stability Chart Placeholder]</p>
-                    </div>
+                    <img src="assets/stability.png" alt="Signal Variance Stability" class="viz-image">
                     <p class="mono text-sm text-gray-400 text-center mt-4 text-shadow">Armen Guard: Variance locked at 1.0 across 50 layers</p>
                 </div>
                 <div>
-                    <div style="width: 600px; height: 300px; border: 2px solid rgba(15,255,15,0.5); display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5);">
-                        <p class="mono text-gray-500">[VRAM Chart Placeholder]</p>
-                    </div>
+                    <img src="assets/vram_cliff.png" alt="VRAM Capacity" class="viz-image">
                     <p class="mono text-sm text-gray-400 text-center mt-4 text-shadow">128x batch capacity vs PyTorch FP16</p>
                 </div>
             </div>
@@ -566,11 +560,28 @@
         // Need to wait for button to exist before adding listener
         function setupOverrideButton() {
             const btn = document.getElementById('override-btn');
+            const ambientMusic = document.getElementById('ambient-music');
             console.log('Setting up button:', btn);
             if (btn) {
                 btn.addEventListener('click', function(e) {
                     console.log('Button clicked!');
                     e.preventDefault();
+                    
+                    // Start the music
+                    ambientMusic.volume = 0;
+                    ambientMusic.play().then(() => {
+                        console.log('Music started');
+                        let v = 0;
+                        let fade = setInterval(() => {
+                            if(v < 0.25) { 
+                                v += 0.008; 
+                                ambientMusic.volume = v; 
+                            } else {
+                                clearInterval(fade);
+                            }
+                        }, 100);
+                    }).catch(e => console.log('Audio blocked:', e));
+                    
                     commandPrompt.innerHTML = "&gt; OVERRIDE_ACCEPTED.<br>&gt; PROTOCOL_C_ACTIVE.";
                     setTimeout(() => {
                         console.log('Transitioning to odyssey...');
