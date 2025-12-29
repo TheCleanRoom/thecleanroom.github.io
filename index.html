@@ -513,23 +513,31 @@
                 logIdx++;
                 setTimeout(typeLog, 400);
             } else {
+                console.log('All logs typed, showing command prompt');
                 commandPrompt.style.display = 'block';
                 
                 // THIS IS THE FIX - Wait for DOM to render the button
                 setTimeout(() => {
+                    console.log('Looking for button...');
                     const btn = document.getElementById('override-btn');
-                    const ambientMusic = new Audio('assets/spiegel.mp3');
-                    ambientMusic.loop = true;
+                    console.log('Button element:', btn);
                     
                     if (btn) {
-                        console.log('Button found, attaching listener');
+                        console.log('✅ Button found! Setting up music and click handler...');
+                        const ambientMusic = new Audio('assets/spiegel.mp3');
+                        ambientMusic.loop = true;
+                        
+                        console.log('Music object created:', ambientMusic);
+                        
                         btn.onclick = function(e) {
                             e.preventDefault();
-                            console.log('BUTTON CLICKED!!!');
+                            console.log('🎉 BUTTON CLICKED!!!');
                             
                             // Start music
+                            console.log('Attempting to play music...');
                             ambientMusic.volume = 0;
                             ambientMusic.play().then(() => {
+                                console.log('✅ Music playing!');
                                 let v = 0;
                                 let fade = setInterval(() => {
                                     if(v < 0.25) { 
@@ -537,9 +545,10 @@
                                         ambientMusic.volume = v; 
                                     } else {
                                         clearInterval(fade);
+                                        console.log('Music faded to full volume');
                                     }
                                 }, 100);
-                            }).catch(e => console.log('Audio blocked:', e));
+                            }).catch(e => console.log('❌ Audio blocked:', e));
                             
                             commandPrompt.innerHTML = "&gt; OVERRIDE_ACCEPTED.<br>&gt; PROTOCOL_C_ACTIVE.";
                             setTimeout(() => {
