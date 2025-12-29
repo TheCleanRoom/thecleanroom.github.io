@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protocol C: A Study in Quantized Model Stability</title>
+    <link rel="preload" as="image" href="https://stsci-opia.org/STScI-01H449193V16Q4JBXV49HWVFXB.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Inter:wght@300;400;700&display=swap');
         
@@ -11,7 +12,7 @@
         
         body { 
             background: 
-                linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)),
+                linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
                 url('https://stsci-opia.org/STScI-01H449193V16Q4JBXV49HWVFXB.png') no-repeat center center fixed;
             background-size: cover;
             color: #fff; 
@@ -20,12 +21,36 @@
             transition: background 2s ease;
         }
         
+        /* Fallback starfield if JWST doesn't load */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.15), transparent),
+                radial-gradient(2px 2px at 60% 70%, rgba(255,255,255,0.1), transparent),
+                radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.15), transparent),
+                radial-gradient(2px 2px at 90% 60%, rgba(255,255,255,0.1), transparent),
+                radial-gradient(1px 1px at 15% 90%, rgba(255,255,255,0.2), transparent),
+                radial-gradient(2px 2px at 35% 20%, rgba(255,255,255,0.1), transparent);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
         .mono { font-family: 'JetBrains Mono', monospace; }
         
         /* Deceptive Academic Opening */
         .academic-mode {
             background: #fff;
             color: #000;
+        }
+        
+        .academic-mode::after {
+            display: none;
         }
         
         .academic-mode .paper-header {
@@ -92,6 +117,20 @@
             100% { opacity: 1; }
         }
         
+        .scramble {
+            display: inline-block;
+            animation: scramble 0.1s infinite;
+        }
+        
+        @keyframes scramble {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(-1px, 1px); }
+            40% { transform: translate(1px, -1px); }
+            60% { transform: translate(-1px, -1px); }
+            80% { transform: translate(1px, 1px); }
+            100% { transform: translate(0, 0); }
+        }
+        
         /* 17776 Style - Hidden Initially */
         .spacer { height: 100vh; }
         .deep-spacer { height: 200vh; }
@@ -148,10 +187,6 @@
         .odyssey-section {
             display: none;
         }
-        
-        .odyssey-section.active {
-            display: block;
-        }
 
         /* Math Display */
         .math {
@@ -168,6 +203,32 @@
             color: #888;
             margin-top: 1rem;
         }
+
+        /* Audio Control */
+        #audio-control {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #fff;
+            cursor: pointer;
+            z-index: 100;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        #audio-control:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        #audio-control.active {
+            display: block;
+        }
     </style>
 </head>
 <body class="academic-mode">
@@ -183,7 +244,31 @@
             
             <p style="margin-bottom: 1rem;">Standard approaches to model quantization suffer from accumulated numerical errors and correlation instabilities that manifest as catastrophic degradation in inference quality. Our work introduces three core innovations: (1) dynamic variance monitoring through what we term the "Armen Guard" mechanism, (2) a local syntactic stabilization layer, and (3) recursive residual quantization for progressive error correction.</p>
             
-            <p id="glitch-trigger" style="margin-bottom: 1rem;">The research was conducted over a four-day period at <span class="glitch-text">████████████████</span></p>
+            <p style="margin-bottom: 2rem;"><strong>1. Introduction</strong></p>
+            
+            <p style="margin-bottom: 1rem;">The deployment of large language models in resource-constrained environments has become increasingly critical as computational demands continue to scale exponentially. Quantization represents a promising avenue for reducing memory footprint and inference latency, yet aggressive bit-width reduction—particularly to 2-bit representations—introduces fundamental challenges in maintaining numerical stability and model fidelity.</p>
+            
+            <p style="margin-bottom: 1rem;">Previous work in quantization has primarily focused on post-training quantization techniques and quantization-aware training methodologies. While these approaches have achieved success in 8-bit and 4-bit regimes, they encounter severe degradation when extended to 2-bit weight representations. The core issue manifests as a correlation blow-up phenomenon, where similar input patterns create unstable routing distributions in the quantized parameter space.</p>
+            
+            <p style="margin-bottom: 1rem;">Our contribution addresses this fundamental limitation through architectural innovation rather than optimization refinement. We hypothesize that the instability problem is not inherent to quantization itself, but rather emerges from the assumption of uniform attention density across all tokens in the sequence.</p>
+            
+            <p style="margin-bottom: 2rem;"><strong>2. Methodology</strong></p>
+            
+            <p style="margin-bottom: 1rem;">We introduce Protocol C, a packet-switched attention mechanism that discretizes token processing into four routing categories based on semantic density and syntactic structure. This approach allows the model to allocate computational resources adaptively, processing high-confidence noise with minimal overhead while preserving full-precision attention for semantically dense regions.</p>
+            
+            <p style="margin-bottom: 1rem;">The system employs a differentiable gating mechanism trained end-to-end with Gumbel-Softmax relaxation, enabling gradient flow through discrete routing decisions. Each token is assigned to one of four packet types: NULL (00), LOCAL TETHER (01), GLOBAL ANCHOR (10), or GLOBAL SIGNAL (11), corresponding to different computational pathways optimized for specific linguistic patterns.</p>
+            
+            <p style="margin-bottom: 1rem;">Formally, we define the routing function as:</p>
+            
+            <p style="margin-bottom: 1rem; text-align: center; font-family: 'Times New Roman', serif; font-style: italic;">
+                R(h<sub>t</sub>) = argmax<sub>k∈{00,01,10,11}</sub> Softmax(W<sub>gate</sub>h<sub>t</sub> + b<sub>gate</sub>)<sub>k</sub>
+            </p>
+            
+            <p style="margin-bottom: 1rem;">where h<sub>t</sub> represents the hidden state at position t. The variance monitoring mechanism applies a dynamic correction when σ<sup>2</sup>(h<sub>t</sub>) > 0.85, preventing the correlation blow-up phenomenon observed in standard quantized architectures.</p>
+            
+            <p style="margin-bottom: 2rem;"><strong>3. Experimental Setup</strong></p>
+            
+            <p id="glitch-trigger" style="margin-bottom: 1rem;">The research was conducted over a four-day period at <span id="scramble-text">a university research facility</span></p>
             
             <p style="margin-bottom: 1rem; display: none;" id="glitch-reveal">The research was conducted over a four-day period at <span style="text-decoration: line-through;">a university research facility</span> <span style="color: #f00;">a motel in Newport Beach</span></p>
             
@@ -192,7 +277,7 @@
     </div>
 
     <!-- TERMINAL INTERRUPTION (Hidden Initially) -->
-    <section class="h-screen flex flex-col justify-center px-12 md:px-24 section-container odyssey-section">
+    <section class="h-screen flex flex-col justify-center px-12 md:px-24 section-container odyssey-section" style="display: none;" id="terminal-section">
         <div id="terminal" class="mono">
             <div id="boot-logs"></div>
             <span class="cursor"></span>
@@ -200,8 +285,7 @@
     </section>
 
     <!-- Deep Space -->
-    <div class="spacer odyssey-section"></div>
-    <div class="deep-spacer odyssey-section"></div>
+    <div class="deep-spacer odyssey-section" style="display: none;"></div>
 
     <!-- The Revelation -->
     <section class="h-screen flex items-center justify-center px-6 reveal section-container odyssey-section">
@@ -237,7 +321,6 @@
 
     <!-- The Question -->
     <section class="h-screen flex flex-col justify-center px-12 md:px-24 reveal section-container odyssey-section">
-        <h3 class="text-xs uppercase tracking-[0.5em] text-cyan-400 mb-8 mono fade-in">// THE PROBLEM</h3>
         <p class="text-3xl md:text-5xl font-bold mb-6 fade-in max-w-3xl">Why do 2-bit models collapse?</p>
         <p class="text-xl md:text-2xl text-gray-500 max-w-2xl fade-in">Four nights. One checkout deadline. Zero fallback options.</p>
     </section>
@@ -295,7 +378,7 @@
             
             <p class="fade-in" style="color: #888;">> This is how research happens when you have no other choice.</p>
             <p class="fade-in text-gray-300">You solve the problem.</p>
-            <p class="fade-in text-gray-300">And you sleep outside anyway.</p>
+            <p class="fade-in text-gray-300">And sometimes you still sleep outside.</p>
             
             <p class="fade-in font-bold text-white">I did both.</p>
         </div>
@@ -360,51 +443,132 @@
     <!-- Final Space -->
     <div class="spacer odyssey-section"></div>
 
+    <!-- Audio Control Button -->
+    <button id="audio-control">🔊 ENABLE SOUND</button>
+
+    <!-- Hidden Audio Element -->
+    <audio id="ambient-music" loop>
+        <source src="https://www.kozco.com/tech/LRMonoPhase4.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         // DECEPTIVE OPENING SEQUENCE
         let glitchTriggered = false;
+        let scrollStartTime = null;
+        let hasScrolled = false;
+        
+        // Detect mobile
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const triggerTime = isMobile ? 500 : 1500; // 0.5s mobile, 1.5s desktop
+        
+        // Word scrambling effect (17776 style)
+        function scrambleText(element, originalText, duration) {
+            const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
+            let iterations = 0;
+            const maxIterations = duration / 50;
+            
+            const interval = setInterval(() => {
+                element.textContent = originalText
+                    .split('')
+                    .map((char, index) => {
+                        if (char === ' ') return ' ';
+                        if (iterations > maxIterations * (index / originalText.length)) {
+                            return originalText[index];
+                        }
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join('');
+                
+                iterations++;
+                
+                if (iterations > maxIterations) {
+                    clearInterval(interval);
+                    element.textContent = originalText;
+                }
+            }, 50);
+        }
+        
+        function triggerGlitchSequence() {
+            if (glitchTriggered) return;
+            glitchTriggered = true;
+            
+            console.log('GLITCH TRIGGERED!');
+            
+            const scrambleElement = document.getElementById('scramble-text');
+            const glitchTrigger = document.getElementById('glitch-trigger');
+            
+            // Start word scrambling
+            if (scrambleElement) {
+                scrambleElement.classList.add('scramble');
+                scrambleText(scrambleElement, 'a university research facility', 800);
+                
+                setTimeout(() => {
+                    scrambleElement.classList.remove('scramble');
+                    scrambleText(scrambleElement, '████████████████████████████', 500);
+                }, 1000);
+            }
+            
+            // Start glitch sequence
+            setTimeout(() => {
+                if (glitchTrigger) glitchTrigger.style.display = 'none';
+                const glitchReveal = document.getElementById('glitch-reveal');
+                if (glitchReveal) glitchReveal.style.display = 'block';
+            }, 2000);
+            
+            setTimeout(() => {
+                const interruptText = document.getElementById('interrupt-text');
+                if (interruptText) interruptText.style.display = 'block';
+            }, 3500);
+            
+            setTimeout(() => {
+                // Transition to full odyssey mode
+                document.body.classList.remove('academic-mode');
+                const paperMode = document.getElementById('paper-mode');
+                if (paperMode) {
+                    paperMode.style.transition = 'opacity 1s ease';
+                    paperMode.style.opacity = '0';
+                }
+                
+                setTimeout(() => {
+                    if (paperMode) paperMode.style.display = 'none';
+                    
+                    // Show terminal first
+                    const terminalSection = document.getElementById('terminal-section');
+                    const terminal = document.getElementById('terminal');
+                    if (terminalSection) terminalSection.style.display = 'block';
+                    if (terminal) terminal.classList.add('active');
+                    typeLog();
+                    
+                    // Show audio control after glitch
+                    const audioControl = document.getElementById('audio-control');
+                    if (audioControl) audioControl.classList.add('active');
+                    
+                    // Then activate rest of odyssey sections after terminal finishes
+                    setTimeout(() => {
+                        document.querySelectorAll('.odyssey-section').forEach(el => {
+                            el.style.display = 'block';
+                        });
+                    }, 4000); // Wait for terminal boot to finish
+                }, 1000);
+            }, 5000);
+        }
         
         window.addEventListener('scroll', () => {
             if (glitchTriggered) return;
             
-            const glitchTrigger = document.getElementById('glitch-trigger');
-            if (!glitchTrigger) return;
+            // Start timer on first scroll
+            if (!hasScrolled) {
+                hasScrolled = true;
+                scrollStartTime = Date.now();
+                console.log('User started scrolling, timer started');
+            }
             
-            const rect = glitchTrigger.getBoundingClientRect();
+            // Trigger based on device and scroll
+            const scrolledTime = Date.now() - scrollStartTime;
+            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
             
-            // When user scrolls to the glitch trigger paragraph
-            if (rect.top < window.innerHeight * 0.8 && !glitchTriggered) {
-                glitchTriggered = true;
-                
-                // Start glitch sequence
-                setTimeout(() => {
-                    glitchTrigger.style.display = 'none';
-                    document.getElementById('glitch-reveal').style.display = 'block';
-                }, 1000);
-                
-                setTimeout(() => {
-                    document.getElementById('interrupt-text').style.display = 'block';
-                }, 2500);
-                
-                setTimeout(() => {
-                    // Transition to full odyssey mode
-                    document.body.classList.remove('academic-mode');
-                    document.getElementById('paper-mode').style.transition = 'opacity 1s ease';
-                    document.getElementById('paper-mode').style.opacity = '0';
-                    
-                    setTimeout(() => {
-                        document.getElementById('paper-mode').style.display = 'none';
-                        
-                        // Activate all odyssey sections
-                        document.querySelectorAll('.odyssey-section').forEach(el => {
-                            el.classList.add('active');
-                        });
-                        
-                        // Start terminal boot
-                        document.getElementById('terminal').classList.add('active');
-                        typeLog();
-                    }, 1000);
-                }, 4000);
+            if (scrolledTime > triggerTime || scrollPercent > 0.2) {
+                triggerGlitchSequence();
             }
         });
 
@@ -426,10 +590,33 @@
             if (i < logs.length) {
                 const line = document.createElement('div');
                 line.textContent = logs[i];
-                container.appendChild(line);
+                if (container) container.appendChild(line);
                 i++;
                 setTimeout(typeLog, 600);
             }
+        }
+
+        // Audio Control
+        const audioControl = document.getElementById('audio-control');
+        const ambientMusic = document.getElementById('ambient-music');
+        let audioEnabled = false;
+
+        if (audioControl && ambientMusic) {
+            audioControl.addEventListener('click', () => {
+                if (!audioEnabled) {
+                    ambientMusic.volume = 0.3;
+                    ambientMusic.play().then(() => {
+                        audioEnabled = true;
+                        audioControl.textContent = '🔇 DISABLE SOUND';
+                    }).catch(e => {
+                        console.log('Audio play failed:', e);
+                    });
+                } else {
+                    ambientMusic.pause();
+                    audioEnabled = false;
+                    audioControl.textContent = '🔊 ENABLE SOUND';
+                }
+            });
         }
 
         // Intersection Observer for Fade-ins
