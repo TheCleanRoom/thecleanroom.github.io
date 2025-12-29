@@ -546,14 +546,22 @@ function initMap() {
             commandPrompt.innerHTML = "&gt; OVERRIDE_ACCEPTED.<br>&gt; PROTOCOL_C_ACTIVE.";
             setTimeout(() => {
                 terminalSection.style.display = 'none';
-                odysseyContent.style.display = 'block';
                 
-                let scrollSpeed = 2;
-                function descent() {
-                    window.scrollBy(0, scrollSpeed);
-                    if(window.scrollY < 2000) requestAnimationFrame(descent);
-                }
-                descent();
+                // Show ALL odyssey sections by removing the class
+                document.querySelectorAll('.odyssey-section').forEach(el => {
+                    el.style.display = 'block';
+                });
+                
+                // Scroll to start the journey
+                window.scrollTo(0, 0);
+                setTimeout(() => {
+                    let scrollSpeed = 2;
+                    function descent() {
+                        window.scrollBy(0, scrollSpeed);
+                        if(window.scrollY < 2000) requestAnimationFrame(descent);
+                    }
+                    descent();
+                }, 300);
             }, 1200);
         });
 
